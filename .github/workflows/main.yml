@@ -1,6 +1,0 @@
-name: run-on-server
-run-name: ${{github.actor}} is deploying on Server
-on: [push]
-jobs:
-  run-bot:
-    runs-on: [self-hosted]
