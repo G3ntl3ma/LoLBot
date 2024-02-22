@@ -1,0 +1,19 @@
+{
+  "name": "lolbot",
+  "version": "1.0.0",
+  "description": "A Discord Bot for Competitve LoL Games",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/G3ntl3ma/LoLBot.git"
+  },
+  "author": "Luca Eisen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/G3ntl3ma/LoLBot/issues"
+  },
+  "homepage": "https://github.com/G3ntl3ma/LoLBot#readme"
+}
