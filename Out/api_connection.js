@@ -43,6 +43,11 @@ function getLeagueGames(league, date) {
     });
 }
 exports.getLeagueGames = getLeagueGames;
+/**
+ * return all Games of the specified Team on the date
+ * @param team The Team
+ * @param date YYYY-MM-DD HH:MM:SS Any Part from the end can be missing
+ */
 function getTeamGames(team, date) {
     return __awaiter(this, void 0, void 0, function* () {
         let query = config_1.BASE_URL +
@@ -68,8 +73,3 @@ function getTeamGames(team, date) {
     });
 }
 exports.getTeamGames = getTeamGames;
-getTeamGames("JD Gaming", "2024-02-24").then(games => {
-    for (let i in games) {
-        console.log(games[i].Team1, games[i].Team2);
-    }
-});

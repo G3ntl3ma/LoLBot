@@ -3,6 +3,7 @@
  */
 
 import {Client, IntentsBitField} from "discord.js";
+import {DISCORD_TOKEN} from "./config";
 
 const client = new Client({
     intents: [
@@ -11,6 +12,7 @@ const client = new Client({
         IntentsBitField.Flags.MessageContent]
 });
 
+client.login(DISCORD_TOKEN)
 client.once("ready", ()=> {
     console.log("Bot is ready!");
 })
