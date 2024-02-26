@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BASE_URL = exports.DISCORD_CLIENT_ID = exports.DISCORD_TOKEN = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config({ path: '../.env' });
+dotenv_1.default.config({ path: __dirname + '/../.env' });
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 exports.DISCORD_TOKEN = DISCORD_TOKEN;
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;

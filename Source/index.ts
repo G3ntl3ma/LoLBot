@@ -13,6 +13,6 @@ const client = new Client({
 });
 
 client.login(DISCORD_TOKEN)
-client.once("ready", ()=> {
+client.once("ready", () => {
     console.log("Bot is ready!");
 })
