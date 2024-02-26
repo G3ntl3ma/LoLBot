@@ -2,9 +2,12 @@ import dotenv from "dotenv";
 
 dotenv.config({path: __dirname + '/../.env'});
 
-const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
-const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-const BASE_URL = process.env.BASE_URL;
+// @ts-ignore
+const DISCORD_TOKEN : string = process.env.DISCORD_TOKEN;
+// @ts-ignore
+const DISCORD_CLIENT_ID : string = process.env.DISCORD_CLIENT_ID;
+// @ts-ignore
+const BASE_URL : string = process.env.BASE_URL;
 
 if (!DISCORD_TOKEN || !DISCORD_CLIENT_ID) {
     throw new Error("Missing environment variables");
