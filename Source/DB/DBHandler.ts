@@ -8,7 +8,7 @@ import {ONLINE_CONNECTION} from "../config";
 
 let onlineConnection = ONLINE_CONNECTION
 let localconnection = 'mongodb://127.0.0.1:27017/LoLBotDB'
-mongoose.connect(onlineConnection).then((result: any) =>{console.log("Connected to Database")})
+mongoose.connect(localconnection).then((result: any) =>{console.log("Connected to Database")})
 
 export async function addGuild(id:string){
 

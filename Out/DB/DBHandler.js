@@ -21,7 +21,7 @@ let mongoose = require('mongoose');
 const config_1 = require("../config");
 let onlineConnection = config_1.ONLINE_CONNECTION;
 let localconnection = 'mongodb://127.0.0.1:27017/LoLBotDB';
-mongoose.connect(onlineConnection).then((result) => { console.log("Connected to Database"); });
+mongoose.connect(localconnection).then((result) => { console.log("Connected to Database"); });
 function addGuild(id) {
     return __awaiter(this, void 0, void 0, function* () {
         const config = new serverConfig_js_1.default({
