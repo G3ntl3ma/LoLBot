@@ -18,9 +18,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addGuild = void 0;
 const serverConfig_js_1 = __importDefault(require("./serverConfig.js"));
 let mongoose = require('mongoose');
-let localconnection = 'mongodb://127.0.0.1:27017/testdb';
+let localconnection = 'mongodb://127.0.0.1:27017/LoLBotDB';
 let connectionstring = `mongodb+srv://G3ntl3ma:wEA0Yv2PiqnkaD3S@test.p920t4v.mongodb.net/?retryWrites=true&w=majority`;
-mongoose.connect(connectionstring).then((result) => { console.log("Connected to Database"); });
+mongoose.connect(localconnection).then((result) => { console.log("Connected to Database"); });
 function addGuild(id) {
     return __awaiter(this, void 0, void 0, function* () {
         const config = new serverConfig_js_1.default({
