@@ -1,8 +1,8 @@
 {
   "name": "lolbot",
   "version": "1.0.0",
-  "description": "A Discord Bot for Competitve LoL Games",
-  "main": "index.js",
+  "description": "A Discord Bot for Competitive LoL Games",
+  "main": "./Out/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

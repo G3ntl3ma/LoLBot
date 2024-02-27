@@ -15,12 +15,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addGuild = void 0;
+exports.deleteGuild = exports.addGuild = void 0;
 const serverConfig_js_1 = __importDefault(require("./serverConfig.js"));
 let mongoose = require('mongoose');
+const config_1 = require("../config");
+let onlineConnection = config_1.ONLINE_CONNECTION;
 let localconnection = 'mongodb://127.0.0.1:27017/LoLBotDB';
-let connectionstring = `mongodb+srv://G3ntl3ma:wEA0Yv2PiqnkaD3S@test.p920t4v.mongodb.net/?retryWrites=true&w=majority`;
-mongoose.connect(localconnection).then((result) => { console.log("Connected to Database"); });
+mongoose.connect(onlineConnection).then((result) => { console.log("Connected to Database"); });
 function addGuild(id) {
     return __awaiter(this, void 0, void 0, function* () {
         const config = new serverConfig_js_1.default({
@@ -30,3 +31,9 @@ function addGuild(id) {
     });
 }
 exports.addGuild = addGuild;
+function deleteGuild(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return serverConfig_js_1.default.deleteOne({ _id: id });
+    });
+}
+exports.deleteGuild = deleteGuild;

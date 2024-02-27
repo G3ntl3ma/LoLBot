@@ -11,12 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const DBHandler_1 = require("../DB/DBHandler");
+require('discord.js');
 module.exports = {
-    name: discord_js_1.Events.GuildCreate,
+    name: discord_js_1.Events.GuildDelete,
     execute(guild) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield (0, DBHandler_1.addGuild)(guild.id);
-            console.log("New Server has been successfully added!");
+            yield (0, DBHandler_1.deleteGuild)(guild.id);
+            console.log("Server has been sucessfully deleted!");
         });
     },
 };
