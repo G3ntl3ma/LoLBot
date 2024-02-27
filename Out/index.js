@@ -67,29 +67,16 @@ const rest = new discord_js_1.REST().setToken(config_1.DISCORD_TOKEN);
         console.error(error);
     }
 }))();
-//Execute commands
-client.on(discord_js_1.Events.InteractionCreate, (interaction) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!interaction.isChatInputCommand())
-        return;
-    // @ts-ignore
-    const command = interaction.client.commands.get(interaction.commandName);
-    if (!command) {
-        console.error(`No command matching ${interaction.commandName} was found.`);
-        return;
+//Work off all Event Files
+const eventsPath = path_1.default.join(__dirname, 'events');
+const eventFiles = fs_1.default.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
+for (const file of eventFiles) {
+    const filePath = path_1.default.join(eventsPath, file);
+    const event = require(filePath);
+    if (event.once) {
+        client.once(event.name, (...args) => event.execute(...args));
     }
-    try {
-        yield command.execute(interaction);
+    else {
+        client.on(event.name, (...args) => event.execute(...args));
     }
-    catch (error) {
-        console.error(error);
-        if (interaction.replied || interaction.deferred) {
-            yield interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
-        }
-        else {
-            yield interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
-        }
-    }
-}));
-client.once("ready", () => {
-    console.log("Bot is ready!");
-});
+}
