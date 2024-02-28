@@ -10,7 +10,7 @@ const serverConfigSchema = new Schema({
         type: String,
         required: true,
     },
-    output: {
+    out: {
         type: String,
         required: false
     },

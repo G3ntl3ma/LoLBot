@@ -6,7 +6,7 @@ const serverConfigSchema = new Schema({
         type: String,
         required: true,
     },  //ServerID
-    output: {
+    out: {
         type: String,
         required: false
     }, //Output Channel
