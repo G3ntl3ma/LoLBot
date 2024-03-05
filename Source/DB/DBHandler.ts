@@ -1,10 +1,11 @@
 /**
- * Contains all functions needed for Connecrion to the DB
+ * Contains all functions needed for Connection to the DB
  */
 
 import serverConfig from './serverConfig.js';
 let mongoose = require('mongoose');
 import {ONLINE_CONNECTION} from "../config";
+import {serverInfo} from "../util/Types";
 
 let onlineConnection = ONLINE_CONNECTION
 let localconnection = 'mongodb://127.0.0.1:27017/LoLBotDB'
@@ -34,4 +35,31 @@ export async function deleteGuild(id:string){
 
 export async function updateOutput(channelId: string, GuildId:string){
    return await serverConfig.findOneAndUpdate({_id: GuildId}, {out: channelId});
+}
+
+export async function addTeamSub(TeamId: string, GuildId:string){
+    return await serverConfig.findOneAndUpdate({_id :GuildId}, {$push: {teamSubs: {code: TeamId}}})
+}
+
+/**
+ * Get the Information about a certain Guild
+ * @param GuildId The Guild Id
+ */
+export async function getServerInfo(GuildId: string){
+    let info : serverInfo;
+
+    try {
+        //@ts-ignore
+        info = await serverConfig.findById(GuildId);
+    }
+    catch (e) {
+        console.log("Server could not be found")
+        info  = {
+            _id : "",
+            out : "",
+            teamSubs :[{}],
+            leagueSubs : [ {}],
+        }
+    }
+    return info;
 }

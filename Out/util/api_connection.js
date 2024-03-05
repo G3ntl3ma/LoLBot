@@ -12,8 +12,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findTeam = exports.getTeamGames = exports.getLeagueGames = void 0;
-const config_1 = require("./config");
+exports.retrievePicUrl = exports.findTeam = exports.getTeamGames = exports.getLeagueGames = void 0;
+const config_1 = require("../config");
 /**
  *  returns all Games in the League scheduled on the Date
  * @param league String with the Name of the League
@@ -93,4 +93,25 @@ function findTeam(team) {
     });
 }
 exports.findTeam = findTeam;
-findTeam("T1").then(i => { console.log(i); });
+/**
+ * Get the Url of a Team Logo to set as a Source
+ * @param team the Team of which you want the Logo of
+ */
+function retrievePicUrl(team) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const info = yield fetch(`https://lol.fandom.com/api.php?action=query&format=json&prop=imageinfo&titles=File:${team}logo%20square.png&iiprop=url`);
+            const data = yield info.json();
+            for (let i in data["query"]["pages"]) {
+                return data["query"]["pages"][i]["imageinfo"][0]["url"];
+            }
+        }
+        catch (e) {
+            console.log(e);
+            return "";
+        }
+    });
+}
+exports.retrievePicUrl = retrievePicUrl;
+retrievePicUrl("T1").then(url => console.log(url));
+retrievePicUrl("JD Gaming").then(url => console.log(url));

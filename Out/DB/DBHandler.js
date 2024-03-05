@@ -1,6 +1,6 @@
 "use strict";
 /**
- * Contains all functions needed for Connecrion to the DB
+ * Contains all functions needed for Connection to the DB
  */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -15,7 +15,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateOutput = exports.deleteGuild = exports.addGuild = void 0;
+exports.getServerInfo = exports.addTeamSub = exports.updateOutput = exports.deleteGuild = exports.addGuild = void 0;
 const serverConfig_js_1 = __importDefault(require("./serverConfig.js"));
 let mongoose = require('mongoose');
 const config_1 = require("../config");
@@ -52,3 +52,33 @@ function updateOutput(channelId, GuildId) {
     });
 }
 exports.updateOutput = updateOutput;
+function addTeamSub(TeamId, GuildId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield serverConfig_js_1.default.findOneAndUpdate({ _id: GuildId }, { $push: { teamSubs: { code: TeamId } } });
+    });
+}
+exports.addTeamSub = addTeamSub;
+/**
+ * Get the Information about a certain Guild
+ * @param GuildId The Guild Id
+ */
+function getServerInfo(GuildId) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let info;
+        try {
+            //@ts-ignore
+            info = yield serverConfig_js_1.default.findById(GuildId);
+        }
+        catch (e) {
+            console.log("Server could not be found");
+            info = {
+                _id: "",
+                out: "",
+                teamSubs: [{}],
+                leagueSubs: [{}],
+            };
+        }
+        return info;
+    });
+}
+exports.getServerInfo = getServerInfo;
