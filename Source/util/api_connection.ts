@@ -4,24 +4,26 @@
 
 import {BASE_URL} from "../config";
 import {game} from "./Types"
-
+/*
 /**
  *  returns all Games in the League scheduled on the Date
  * @param league String with the Name of the League
  * @param date The Date of the Games in Form YYYY-MM-DD
- */
+ *
 export async function getLeagueGames(league: string, date: string) {
     let query: string = BASE_URL +
-        `ScoreboardGames&fields=Team1,Team2, DateTime_UTC&where=DateTime_UTC like "${date}%" and Tournament like "${league} %"`;
+        `ScoreboardGames&fields=Team1,Team2, DateTime_UTC, Tournament&where=DateTime_UTC like "${date}%" and Tournament like "${league} %"`;
     let games: game[] = new Array<game>()
     try {
         const matches = await fetch(query);
         const data = await matches.json();
         for (let i in data.cargoquery) {
+            console.log(data.cargoquery[i].title)
             let game: game = {
                 Team1: data.cargoquery[i].title.Team1,
                 Team2: data.cargoquery[i].title.Team2,
-                'DateTime UTC': data.cargoquery[i].title["DateTime UTC"]
+                'DateTime UTC': data.cargoquery[i].title["DateTime UTC"],
+                Tournament : data.cargoquery[i].title.Tournament
             }
             games.push(game)
         }
@@ -30,16 +32,17 @@ export async function getLeagueGames(league: string, date: string) {
     }
     return games
 }
+*/
 
-/**
+
+/*
  * return all Games of the specified Team on the date
  * @param team The Team
  * @param date YYYY-MM-DD HH:MM:SS Any Part from the end can be missing
- */
+ *
 export async function getTeamGames(team: string, date: string) {
     let query: string = BASE_URL +
         `ScoreboardGames&fields=Team1,Team2, DateTime_UTC&where=DateTime_UTC like "${date}%" AND (Team1 like "${team}%" or Team2 like "${team}%")`;
-    console.log(query);
     let games: game[] = new Array<game>()
     try {
         const matches = await fetch(query);
@@ -48,7 +51,8 @@ export async function getTeamGames(team: string, date: string) {
             let game: game = {
                 Team1: data.cargoquery[i].title.Team1,
                 Team2: data.cargoquery[i].title.Team2,
-                'DateTime UTC': data.cargoquery[i].title["DateTime UTC"]
+                'DateTime UTC': data.cargoquery[i].title["DateTime UTC"],
+                Tournament : data.cargoquery[i].title.Tournament
             }
             games.push(game)
         }
@@ -57,19 +61,17 @@ export async function getTeamGames(team: string, date: string) {
     }
     return games
 }
-
+*/
 export async function findTeam(team: string){
-    let query: string = BASE_URL + `Teams&fields=Short&where= (Name = "${team}" OR Short = "${team}") AND isDisbanded = "false"`// OR (Short LIKE"%${team}% OR Medium Like(%${team}%)")
-    let Team: string[] = new Array<string>()
+    let query: string = BASE_URL + `Teams&fields=Name&where= (Name = "${team}" OR Short = "${team}") AND isDisbanded = "false"`// OR (Short LIKE"%${team}% OR Medium Like(%${team}%)")
+    let Team: string[] = []
 
-    console.log(query)
     try {
         const teams = await fetch(query);
         const data = await teams.json();
-        console.log(data.cargoquery[0].title)
 
         for(let i in data.cargoquery){
-            Team.push(data.cargoquery[i].title.Short)
+            Team.push(data.cargoquery[i].title.Name)
         }
     }
 
@@ -86,6 +88,7 @@ export async function findTeam(team: string){
  */
 export async function retrievePicUrl(team: String){
     try {
+
         const info = await fetch(`https://lol.fandom.com/api.php?action=query&format=json&prop=imageinfo&titles=File:${team}logo%20square.png&iiprop=url`);
         const data = await info.json();
         for (let i in data["query"]["pages"]) {
@@ -94,6 +97,37 @@ export async function retrievePicUrl(team: String){
     }
     catch (e) {
         console.log(e)
-        return ""
+        return null
+    }
+}
+
+/**
+ * Get all Games on a certain Day
+ * @param date YYYY-MM-DD in UTC
+ */
+export async function getGames(date: String){
+    try{
+        const info = await fetch(
+            BASE_URL +
+            `MatchSchedule&fields=Team1,Team2, DateTime_UTC, Winner&where=DateTime_UTC like "${date}%"`);
+        const data = await info.json();
+        console.log(data);
+    let games : game[] = [] ;
+
+    for(let i in data.cargoquery){
+        games.push({
+            Team1 : data.cargoquery[i].title.Team1,
+            Team2 : data.cargoquery[i].title.Team2,
+            'DateTime UTC': data.cargoquery[i].title["DateTime UTC"],
+            Tournament : "",
+            Winner : data.cargoquery[i].title.Winner
+        })
+    }
+    return games
+
+    }
+    catch (e) {
+        console.log(e)
+        return {}
     }
 }

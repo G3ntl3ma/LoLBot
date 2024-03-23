@@ -62,7 +62,7 @@ const rest = new REST().setToken(DISCORD_TOKEN);
     }
 })();
 
-//Work off all Event Files
+//Load Event Files
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 
@@ -74,4 +74,5 @@ for (const file of eventFiles) {
     } else {
         client.on(event.name, (...args) => event.execute(...args));
     }
+
 }

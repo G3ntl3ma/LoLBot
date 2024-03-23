@@ -2,10 +2,10 @@
  * Contains all functions needed for Connection to the DB
  */
 
-import serverConfig from './serverConfig.js';
+import serverConfig, {gameConfig} from './serverConfig.js';
 let mongoose = require('mongoose');
 import {ONLINE_CONNECTION} from "../config";
-import {serverInfo} from "../util/Types";
+import {serverInfo, game} from "../util/Types";
 
 let onlineConnection = ONLINE_CONNECTION
 let localconnection = 'mongodb://127.0.0.1:27017/LoLBotDB'
@@ -62,4 +62,13 @@ export async function getServerInfo(GuildId: string){
         }
     }
     return info;
+}
+
+export async function findGame(game :game){
+
+    return gameConfig.find(game);
+}
+
+export async function find(){
+    return await gameConfig.find();
 }

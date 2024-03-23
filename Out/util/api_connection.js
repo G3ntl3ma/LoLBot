@@ -12,78 +12,73 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.retrievePicUrl = exports.findTeam = exports.getTeamGames = exports.getLeagueGames = void 0;
+exports.getGames = exports.retrievePicUrl = exports.findTeam = void 0;
 const config_1 = require("../config");
+/*
 /**
  *  returns all Games in the League scheduled on the Date
  * @param league String with the Name of the League
  * @param date The Date of the Games in Form YYYY-MM-DD
- */
-function getLeagueGames(league, date) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let query = config_1.BASE_URL +
-            `ScoreboardGames&fields=Team1,Team2, DateTime_UTC&where=DateTime_UTC like "${date}%" and Tournament like "${league} %"`;
-        let games = new Array();
-        try {
-            const matches = yield fetch(query);
-            const data = yield matches.json();
-            for (let i in data.cargoquery) {
-                let game = {
-                    Team1: data.cargoquery[i].title.Team1,
-                    Team2: data.cargoquery[i].title.Team2,
-                    'DateTime UTC': data.cargoquery[i].title["DateTime UTC"]
-                };
-                games.push(game);
+ *
+export async function getLeagueGames(league: string, date: string) {
+    let query: string = BASE_URL +
+        `ScoreboardGames&fields=Team1,Team2, DateTime_UTC, Tournament&where=DateTime_UTC like "${date}%" and Tournament like "${league} %"`;
+    let games: game[] = new Array<game>()
+    try {
+        const matches = await fetch(query);
+        const data = await matches.json();
+        for (let i in data.cargoquery) {
+            console.log(data.cargoquery[i].title)
+            let game: game = {
+                Team1: data.cargoquery[i].title.Team1,
+                Team2: data.cargoquery[i].title.Team2,
+                'DateTime UTC': data.cargoquery[i].title["DateTime UTC"],
+                Tournament : data.cargoquery[i].title.Tournament
             }
+            games.push(game)
         }
-        catch (e) {
-            console.log("Query has failed: " + e);
-        }
-        return games;
-    });
+    } catch (e: any) {
+        console.log("Query has failed: " + e);
+    }
+    return games
 }
-exports.getLeagueGames = getLeagueGames;
-/**
+*/
+/*
  * return all Games of the specified Team on the date
  * @param team The Team
  * @param date YYYY-MM-DD HH:MM:SS Any Part from the end can be missing
- */
-function getTeamGames(team, date) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let query = config_1.BASE_URL +
-            `ScoreboardGames&fields=Team1,Team2, DateTime_UTC&where=DateTime_UTC like "${date}%" AND (Team1 like "${team}%" or Team2 like "${team}%")`;
-        console.log(query);
-        let games = new Array();
-        try {
-            const matches = yield fetch(query);
-            const data = yield matches.json();
-            for (let i in data.cargoquery) {
-                let game = {
-                    Team1: data.cargoquery[i].title.Team1,
-                    Team2: data.cargoquery[i].title.Team2,
-                    'DateTime UTC': data.cargoquery[i].title["DateTime UTC"]
-                };
-                games.push(game);
+ *
+export async function getTeamGames(team: string, date: string) {
+    let query: string = BASE_URL +
+        `ScoreboardGames&fields=Team1,Team2, DateTime_UTC&where=DateTime_UTC like "${date}%" AND (Team1 like "${team}%" or Team2 like "${team}%")`;
+    let games: game[] = new Array<game>()
+    try {
+        const matches = await fetch(query);
+        const data = await matches.json();
+        for (let i in data.cargoquery) {
+            let game: game = {
+                Team1: data.cargoquery[i].title.Team1,
+                Team2: data.cargoquery[i].title.Team2,
+                'DateTime UTC': data.cargoquery[i].title["DateTime UTC"],
+                Tournament : data.cargoquery[i].title.Tournament
             }
+            games.push(game)
         }
-        catch (e) {
-            console.log("Query has failed: " + e);
-        }
-        return games;
-    });
+    } catch (e: any) {
+        console.log("Query has failed: " + e);
+    }
+    return games
 }
-exports.getTeamGames = getTeamGames;
+*/
 function findTeam(team) {
     return __awaiter(this, void 0, void 0, function* () {
-        let query = config_1.BASE_URL + `Teams&fields=Short&where= (Name = "${team}" OR Short = "${team}") AND isDisbanded = "false"`; // OR (Short LIKE"%${team}% OR Medium Like(%${team}%)")
-        let Team = new Array();
-        console.log(query);
+        let query = config_1.BASE_URL + `Teams&fields=Name&where= (Name = "${team}" OR Short = "${team}") AND isDisbanded = "false"`; // OR (Short LIKE"%${team}% OR Medium Like(%${team}%)")
+        let Team = [];
         try {
             const teams = yield fetch(query);
             const data = yield teams.json();
-            console.log(data.cargoquery[0].title);
             for (let i in data.cargoquery) {
-                Team.push(data.cargoquery[i].title.Short);
+                Team.push(data.cargoquery[i].title.Name);
             }
         }
         catch (e) {
@@ -108,10 +103,38 @@ function retrievePicUrl(team) {
         }
         catch (e) {
             console.log(e);
-            return "";
+            return null;
         }
     });
 }
 exports.retrievePicUrl = retrievePicUrl;
-retrievePicUrl("T1").then(url => console.log(url));
-retrievePicUrl("JD Gaming").then(url => console.log(url));
+/**
+ * Get all Games on a certain Day
+ * @param date YYYY-MM-DD in UTC
+ */
+function getGames(date) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const info = yield fetch(config_1.BASE_URL +
+                `MatchSchedule&fields=Team1,Team2, DateTime_UTC, Winner&where=DateTime_UTC like "${date}%"`);
+            const data = yield info.json();
+            console.log(data);
+            let games = [];
+            for (let i in data.cargoquery) {
+                games.push({
+                    Team1: data.cargoquery[i].title.Team1,
+                    Team2: data.cargoquery[i].title.Team2,
+                    'DateTime UTC': data.cargoquery[i].title["DateTime UTC"],
+                    Tournament: "",
+                    Winner: data.cargoquery[i].title.Winner
+                });
+            }
+            return games;
+        }
+        catch (e) {
+            console.log(e);
+            return {};
+        }
+    });
+}
+exports.getGames = getGames;

@@ -67,7 +67,7 @@ const rest = new discord_js_1.REST().setToken(config_1.DISCORD_TOKEN);
         console.error(error);
     }
 }))();
-//Work off all Event Files
+//Load Event Files
 const eventsPath = path_1.default.join(__dirname, 'events');
 const eventFiles = fs_1.default.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 for (const file of eventFiles) {

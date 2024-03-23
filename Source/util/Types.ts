@@ -7,9 +7,11 @@
  * return Type of api_connection functions
  */
 export type game = {
+    'DateTime UTC': string,
     Team1: string,
     Team2: string,
-    'DateTime UTC': string
+    Tournament: string | undefined |null,
+    Winner: string |undefined |null
 }
 /**
  * The Format of how Infos about a Guild are stored
