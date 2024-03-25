@@ -10,28 +10,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateFinishedGames = exports.findNewGames = void 0;
-const api_connection_1 = require("./api_connection");
 const serverConfig_1 = require("../DB/serverConfig");
 const DBHandler_1 = require("../DB/DBHandler");
-/**
- * This File looks for new Games and adds them to the DB.
- * Also Deletes Games when they have been played and updates Games when a Winner is Determined
- */
-/**
- * Finds all Games from the current Day to 30 Days ahead
- * and put them in
- */
 function findNewGames() {
     return __awaiter(this, void 0, void 0, function* () {
         for (let i = 0; i <= 30; i++) {
             let date = new Date();
             date.setDate(date.getUTCDate() + i);
-            //@ts-ignore
-            const Games = yield (0, api_connection_1.getGames)(date.toISOString().substring(0, 10));
-            for (let i in Games) {
-                const foundGame = yield (0, DBHandler_1.findGame)(Games[i]);
+            const info = yield fetch(`https://lol.fandom.com/api.php?action=cargoquery&
+            format=json&limit=max&tables=MatchSchedule&fields=Team1,Team2, DateTime_UTC, Winner&
+            where=DateTime_UTC like "${date.toISOString().substring(0, 10)}%"`);
+            const data = yield info.json();
+            let games = [];
+            for (let i in data.cargoquery) {
+                if (typeof (data.cargoquery[i].title["DateTime UTC"]) != "undefined") {
+                    games.push({
+                        Team1: data.cargoquery[i].title.Team1,
+                        Team2: data.cargoquery[i].title.Team2,
+                        'DateTime UTC': data.cargoquery[i].title["DateTime UTC"],
+                        Tournament: "",
+                        Winner: data.cargoquery[i].title.Winner
+                    });
+                }
+            }
+            for (let i in games) {
+                const foundGame = yield (0, DBHandler_1.findGame)(games[i]);
                 if (foundGame.length == 0 && foundGame.Team1 != "TBD" && foundGame.Team2 != "TBD") {
-                    let newGame = new serverConfig_1.gameConfig(Games[i]);
+                    let newGame = new serverConfig_1.gameConfig(games[i]);
                     yield newGame.save();
                 }
             }
@@ -39,12 +44,35 @@ function findNewGames() {
     });
 }
 exports.findNewGames = findNewGames;
-findNewGames().then(res => console.log("finished!"));
 /**
- * update all Games that have finished with the correct Data
+ * When a Game finishes, a Message of the Teams get sent to all Subscribers and the Game gets Deleted
  */
-function updateFinishedGames() {
+function updateFinishedGames(client) {
     return __awaiter(this, void 0, void 0, function* () {
+        //get all Games with a Date between the Past and the Last Day
+        let newDate = new Date();
+        newDate.setDate(newDate.getUTCDate());
+        let mutatedNewDate = newDate.toISOString().substring(0, 10) + " " + newDate.toISOString().substring(11, 19);
+        let oldDate = new Date();
+        oldDate.setDate(oldDate.getUTCDate() - 1);
+        const mutatedOldDate = oldDate.toISOString().substring(0, 10) + " " + oldDate.toISOString().substring(11, 19);
+        let fetchrequest = `https://lol.fandom.com/api.php?action=cargoquery&
+    format=json&limit=max&tables=ScoreboardGames&fields=WinTeam,Team1,Team2,DateTime_UTC, Tournament&
+    where=DateTime_UTC <= '${mutatedNewDate}' AND DateTime_UTC >= '${mutatedOldDate}'`;
+        const finished = yield fetch(fetchrequest);
+        let date = yield finished.json();
+        const loggedGames = yield (0, DBHandler_1.find)();
+        let filter = date.cargoquery.filter((element) => {
+            for (let i in loggedGames) {
+                if (loggedGames[i]["DateTime UTC"] === element["title"]["DateTime UTC"] && loggedGames[i]["Team1"] == element["title"]["Team1"] && loggedGames[i]["Team2"] === element["title"]["Team2"]) {
+                    return true;
+                }
+            }
+            return false;
+        });
+        const Guilds = yield (0, DBHandler_1.getAllGuilds)();
+        for (let i in filter) {
+        }
     });
 }
 exports.updateFinishedGames = updateFinishedGames;

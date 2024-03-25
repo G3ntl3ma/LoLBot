@@ -12,7 +12,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getGames = exports.retrievePicUrl = exports.findTeam = void 0;
+exports.getGames = void 0;
 const config_1 = require("../config");
 /*
 /**
@@ -70,44 +70,6 @@ export async function getTeamGames(team: string, date: string) {
     return games
 }
 */
-function findTeam(team) {
-    return __awaiter(this, void 0, void 0, function* () {
-        let query = config_1.BASE_URL + `Teams&fields=Name&where= (Name = "${team}" OR Short = "${team}") AND isDisbanded = "false"`; // OR (Short LIKE"%${team}% OR Medium Like(%${team}%)")
-        let Team = [];
-        try {
-            const teams = yield fetch(query);
-            const data = yield teams.json();
-            for (let i in data.cargoquery) {
-                Team.push(data.cargoquery[i].title.Name);
-            }
-        }
-        catch (e) {
-            console.log("Query has failed");
-        }
-        return Team;
-    });
-}
-exports.findTeam = findTeam;
-/**
- * Get the Url of a Team Logo to set as a Source
- * @param team the Team of which you want the Logo of
- */
-function retrievePicUrl(team) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const info = yield fetch(`https://lol.fandom.com/api.php?action=query&format=json&prop=imageinfo&titles=File:${team}logo%20square.png&iiprop=url`);
-            const data = yield info.json();
-            for (let i in data["query"]["pages"]) {
-                return data["query"]["pages"][i]["imageinfo"][0]["url"];
-            }
-        }
-        catch (e) {
-            console.log(e);
-            return null;
-        }
-    });
-}
-exports.retrievePicUrl = retrievePicUrl;
 /**
  * Get all Games on a certain Day
  * @param date YYYY-MM-DD in UTC
@@ -121,13 +83,15 @@ function getGames(date) {
             console.log(data);
             let games = [];
             for (let i in data.cargoquery) {
-                games.push({
-                    Team1: data.cargoquery[i].title.Team1,
-                    Team2: data.cargoquery[i].title.Team2,
-                    'DateTime UTC': data.cargoquery[i].title["DateTime UTC"],
-                    Tournament: "",
-                    Winner: data.cargoquery[i].title.Winner
-                });
+                if (typeof (data.cargoquery[i].title["DateTime UTC"]) != "undefined") {
+                    games.push({
+                        Team1: data.cargoquery[i].title.Team1,
+                        Team2: data.cargoquery[i].title.Team2,
+                        'DateTime UTC': data.cargoquery[i].title["DateTime UTC"],
+                        Tournament: "",
+                        Winner: data.cargoquery[i].title.Winner
+                    });
+                }
             }
             return games;
         }

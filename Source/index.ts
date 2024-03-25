@@ -6,6 +6,7 @@ import {Client, IntentsBitField, REST, Routes, Events, Collection} from "discord
 import {DISCORD_TOKEN, DISCORD_CLIENT_ID} from "./config";
 import fs from "fs";
 import path from "path";
+import {updateFinishedGames} from "./util/updateGameFiles";
 
 const client = new Client({
     intents: [

@@ -35,7 +35,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.find = exports.findGame = exports.getServerInfo = exports.addTeamSub = exports.updateOutput = exports.deleteGuild = exports.addGuild = void 0;
+exports.getAllGuilds = exports.find = exports.findGame = exports.getServerInfo = exports.addTeamSub = exports.updateOutput = exports.deleteGuild = exports.addGuild = void 0;
 const serverConfig_js_1 = __importStar(require("./serverConfig.js"));
 let mongoose = require('mongoose');
 const config_1 = require("../config");
@@ -114,3 +114,9 @@ function find() {
     });
 }
 exports.find = find;
+function getAllGuilds() {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield serverConfig_js_1.default.find();
+    });
+}
+exports.getAllGuilds = getAllGuilds;

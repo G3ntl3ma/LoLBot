@@ -11,34 +11,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendUpcomingGame = void 0;
 const discord_js_1 = require("discord.js");
-const api_connection_1 = require("./api_connection");
 function sendUpcomingGame(game, team) {
     return __awaiter(this, void 0, void 0, function* () {
-        //Get the Picture URL
-        let picURL = "";
-        const picInfo = yield fetch(`https://lol.fandom.com/api.php?action=query&format=json&prop=imageinfo&titles=File:${team}logo%20square.png&iiprop=url`);
-        const data = yield picInfo.json();
-        console.log(data);
-        /*
+        let logoURL = "https://imgur.com/deu1U5t.jpeg";
+        const info = yield fetch(`https://lol.fandom.com/api.php?action=query&format=json&prop=imageinfo&titles=File:${team}logo%20square.png&iiprop=url`);
+        const data = yield info.json();
+        console.log(team);
+        console.log(data["query"]["pages"]);
         for (let i in data["query"]["pages"]) {
-            picURL = data["query"]["pages"][i]["imageinfo"][0]["url"]
-        }
-        */
-        let url = yield (0, api_connection_1.retrievePicUrl)(team);
-        let Tournament;
-        if (typeof (game.Tournament) === "string" && game.Tournament.length >= 1) {
-            Tournament = game.Tournament;
-        }
-        else {
-            Tournament = "Teams";
+            logoURL = data["query"]["pages"][i]["imageinfo"][0]["url"];
         }
         const Embed = new discord_js_1.EmbedBuilder()
             .setColor(0x0099FF)
             .setDescription("Upcoming Game from one of your Subscriptions")
             .setTitle('Upcoming Game:')
             .setThumbnail('https://imgur.com/deu1U5t.jpeg')
-            .setImage(url)
-            .addFields({ name: Tournament, value: `${game.Team1} vs ${game.Team2}` }, { name: "Time:", value: `${game["DateTime UTC"]} UTC` });
+            .setImage(logoURL)
+            .addFields({ name: "Teams", value: `${game.Team1} vs ${game.Team2}` }, { name: "Time:", value: `${game["DateTime UTC"]} UTC` });
         return Embed;
     });
 }

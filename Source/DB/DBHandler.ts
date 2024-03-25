@@ -72,3 +72,6 @@ export async function findGame(game :game){
 export async function find(){
     return await gameConfig.find();
 }
+export async function getAllGuilds(){
+    return await serverConfig.find();
+}
