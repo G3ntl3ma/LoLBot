@@ -1,0 +1,18 @@
+version: '3'
+services :
+  web:
+    build: .
+    networks:
+      - network-test
+    depends_on:
+      - mongodb
+  mongodb:
+      image: 'mongodb/mongodb-community-server:6.0.5-ubi8'
+      networks:
+        - network-test
+      volumes:
+        - ./data:/data/db
+networks:
+  network-test:
+    ipam:
+      driver: default

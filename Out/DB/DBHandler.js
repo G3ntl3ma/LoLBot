@@ -40,7 +40,7 @@ const serverConfig_js_1 = __importStar(require("./serverConfig.js"));
 let mongoose = require('mongoose');
 const config_1 = require("../config");
 let onlineConnection = config_1.ONLINE_CONNECTION;
-let localconnection = 'mongodb://127.0.0.1:27017/LoLBotDB';
+let localconnection = 'mongodb://mongodb:27017';
 mongoose.connect(localconnection).then((result) => { console.log("Connected to Database"); });
 /**
  * Add a Guild to the Database

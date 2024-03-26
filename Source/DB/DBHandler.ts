@@ -8,7 +8,7 @@ import {ONLINE_CONNECTION} from "../config";
 import {serverInfo, game} from "../util/Types";
 
 let onlineConnection = ONLINE_CONNECTION
-let localconnection = 'mongodb://127.0.0.1:27017/LoLBotDB'
+let localconnection = 'mongodb://mongodb:27017'
 mongoose.connect(localconnection).then((result: any) =>{console.log("Connected to Database")})
 
 /**
