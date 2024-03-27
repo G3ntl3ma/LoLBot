@@ -25,3 +25,4 @@ export async function sendUpcomingGame(game: game, team: string){
         )
     return Embed
 }
+
