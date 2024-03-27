@@ -33,14 +33,32 @@ export async function deleteGuild(id:string){
     return serverConfig.deleteOne({_id: id});
 }
 
+/**Update the Output of the Guild Channel
+ *
+ * @param channelId
+ * @param GuildId
+ */
 export async function updateOutput(channelId: string, GuildId:string){
    return await serverConfig.findOneAndUpdate({_id: GuildId}, {out: channelId});
 }
 
+/**add a subscription to a Guild
+ *
+ * @param TeamId
+ * @param GuildId
+ */
 export async function addTeamSub(TeamId: string, GuildId:string){
     return await serverConfig.findOneAndUpdate({_id :GuildId}, {$push: {teamSubs: {code: TeamId}}})
 }
 
+/**
+ *
+ * @param TeamId
+ * @param GuildId
+ */
+export async function deleteTeamSub(TeamId: string, GuildId:string){
+    return await serverConfig.findOneAndUpdate({_id :GuildId}, {$pull: {teamSubs: {code: TeamId}}})
+}
 /**
  * Get the Information about a certain Guild
  * @param GuildId The Guild Id
