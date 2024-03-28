@@ -19,7 +19,7 @@ function findNewGames() {
             date.setDate(date.getUTCDate() + i);
             const info = yield fetch(`https://lol.fandom.com/api.php?action=cargoquery&
             format=json&limit=max&tables=MatchSchedule&fields=Team1,Team2, DateTime_UTC, Winner&
-            where=DateTime_UTC like "${date.toISOString().substring(0, 10)}%"`);
+            where=DateTime_UTC like '${date.toISOString().substring(0, 10)}%'`);
             const data = yield info.json();
             let games = [];
             for (let i in data.cargoquery) {
@@ -52,15 +52,28 @@ function updateFinishedGames(client) {
         //get all Games with a Date between the Past and the Last Day
         let newDate = new Date();
         newDate.setDate(newDate.getUTCDate());
-        let mutatedNewDate = newDate.toISOString().substring(0, 10) + " " + newDate.toISOString().substring(11, 19);
+        let mutatedNewDate = newDate.toISOString().substring(0, 4) +
+            newDate.toISOString().substring(5, 7) +
+            newDate.toISOString().substring(8, 10) +
+            newDate.toISOString().substring(11, 13) +
+            newDate.toISOString().substring(14, 16) +
+            newDate.toISOString().substring(17, 19);
         let oldDate = new Date();
         oldDate.setDate(oldDate.getUTCDate() - 1);
-        const mutatedOldDate = oldDate.toISOString().substring(0, 10) + " " + oldDate.toISOString().substring(11, 19);
+        const mutatedOldDate = oldDate.toISOString().substring(0, 4) +
+            oldDate.toISOString().substring(5, 7) +
+            oldDate.toISOString().substring(8, 10) +
+            oldDate.toISOString().substring(11, 13) +
+            oldDate.toISOString().substring(14, 16) +
+            oldDate.toISOString().substring(17, 19);
         let fetchrequest = `https://lol.fandom.com/api.php?action=cargoquery&
     format=json&limit=max&tables=ScoreboardGames&fields=WinTeam,Team1,Team2,DateTime_UTC, Tournament&
     where=DateTime_UTC <= '${mutatedNewDate}' AND DateTime_UTC >= '${mutatedOldDate}'`;
         const finished = yield fetch(fetchrequest);
         let date = yield finished.json();
+        for (let i in date.cargoquery) {
+            console.log(date.cargoquery[i].title);
+        }
         const loggedGames = yield (0, DBHandler_1.find)();
         let filter = date.cargoquery.filter((element) => {
             for (let i in loggedGames) {

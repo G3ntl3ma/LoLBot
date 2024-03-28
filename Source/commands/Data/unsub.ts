@@ -44,10 +44,11 @@ module.exports = {
             }
 
             if (isSubbed) {
-                await deleteTeamSub(teamName, interaction.guildId);
+                console.log(Team[0])
+                console.log(await deleteTeamSub(Team[0], interaction.guildId));
                 interaction.reply(`You unsubscribed from ${Team[0]}!`);
             } else {
-                interaction.reply(`You are not subscribed to ${teamName}!`);
+                interaction.reply(`You are not subscribed to ${Team[0]}!`);
             }
         }
     },

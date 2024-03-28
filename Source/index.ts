@@ -77,3 +77,4 @@ for (const file of eventFiles) {
     }
 
 }
+updateFinishedGames(client).then(res => console.log("Finished"))

@@ -95,7 +95,7 @@ exports.addTeamSub = addTeamSub;
  */
 function deleteTeamSub(TeamId, GuildId) {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield serverConfig_js_1.default.findOneAndUpdate({ _id: GuildId }, { $pull: { teamSubs: { code: TeamId } } });
+        return yield serverConfig_js_1.default.findOneAndUpdate({ _id: GuildId }, { $pull: { 'teamSubs': { code: TeamId } } });
     });
 }
 exports.deleteTeamSub = deleteTeamSub;

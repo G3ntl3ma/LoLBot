@@ -19,6 +19,7 @@ const discord_js_1 = require("discord.js");
 const config_1 = require("./config");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const updateGameFiles_1 = require("./util/updateGameFiles");
 const client = new discord_js_1.Client({
     intents: [
         discord_js_1.IntentsBitField.Flags.Guilds,
@@ -80,3 +81,4 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(...args));
     }
 }
+(0, updateGameFiles_1.updateFinishedGames)(client).then(res => console.log("Finished"));

@@ -57,7 +57,7 @@ export async function addTeamSub(TeamId: string, GuildId:string){
  * @param GuildId
  */
 export async function deleteTeamSub(TeamId: string, GuildId:string){
-    return await serverConfig.findOneAndUpdate({_id :GuildId}, {$pull: {teamSubs: {code: TeamId}}})
+    return await serverConfig.findOneAndUpdate({_id :GuildId}, {$pull: {'teamSubs': {code: TeamId}}})
 }
 /**
  * Get the Information about a certain Guild

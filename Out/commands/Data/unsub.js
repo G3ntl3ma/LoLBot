@@ -51,11 +51,12 @@ module.exports = {
                         isSubbed = true;
                 }
                 if (isSubbed) {
-                    yield (0, DBHandler_1.deleteTeamSub)(teamName, interaction.guildId);
+                    console.log(Team[0]);
+                    console.log(yield (0, DBHandler_1.deleteTeamSub)(Team[0], interaction.guildId));
                     interaction.reply(`You unsubscribed from ${Team[0]}!`);
                 }
                 else {
-                    interaction.reply(`You are not subscribed to ${teamName}!`);
+                    interaction.reply(`You are not subscribed to ${Team[0]}!`);
                 }
             }
         });
