@@ -1,7 +1,4 @@
 "use strict";
-/**
- * Main file of the Bot
- */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -15,11 +12,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * Main file of the Bot
+ */
 const discord_js_1 = require("discord.js");
 const config_1 = require("./config");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const updateGameFiles_1 = require("./util/updateGameFiles");
+const DBHandler_1 = require("./DB/DBHandler");
+console.log("tsc still working");
 const client = new discord_js_1.Client({
     intents: [
         discord_js_1.IntentsBitField.Flags.Guilds,
@@ -81,4 +83,14 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(...args));
     }
 }
-(0, updateGameFiles_1.updateFinishedGames)(client).then(res => console.log("Finished"));
+let newGamesInterval = "";
+let finishedGamesInterval = "";
+DBHandler_1.connect.connect()
+    .then(res => (0, updateGameFiles_1.findNewGames)())
+    .then(res => newGamesInterval = setInterval(updateGameFiles_1.findNewGames, 86400000))
+    .then(res => (0, updateGameFiles_1.updateFinishedGames)(client))
+    .then(res => finishedGamesInterval = setInterval(updateGameFiles_1.updateFinishedGames, 3600000, client))
+    .then(res => console.log("New Games added!"));
+//const newGamesInterval = setInterval(findNewGames, 86_400_000)
+//updateFinishedGames(client).then(res => console.log("Finished Games updated!"))
+//const finishedGamesInterval = setInterval(updateFinishedGames, 3_600_000, client)

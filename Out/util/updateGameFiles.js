@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateFinishedGames = exports.findNewGames = void 0;
 const serverConfig_1 = require("../DB/serverConfig");
 const DBHandler_1 = require("../DB/DBHandler");
+const sendMessage_1 = require("./sendMessage");
 function findNewGames() {
     return __awaiter(this, void 0, void 0, function* () {
         for (let i = 0; i <= 30; i++) {
@@ -29,7 +30,7 @@ function findNewGames() {
                         Team2: data.cargoquery[i].title.Team2,
                         'DateTime UTC': data.cargoquery[i].title["DateTime UTC"],
                         Tournament: "",
-                        Winner: data.cargoquery[i].title.Winner
+                        'Winning Team': data.cargoquery[i].title.Winner
                     });
                 }
             }
@@ -58,6 +59,7 @@ function updateFinishedGames(client) {
             newDate.toISOString().substring(11, 13) +
             newDate.toISOString().substring(14, 16) +
             newDate.toISOString().substring(17, 19);
+        console.log("Flag 1");
         let oldDate = new Date();
         oldDate.setDate(oldDate.getUTCDate() - 1);
         const mutatedOldDate = oldDate.toISOString().substring(0, 4) +
@@ -66,25 +68,36 @@ function updateFinishedGames(client) {
             oldDate.toISOString().substring(11, 13) +
             oldDate.toISOString().substring(14, 16) +
             oldDate.toISOString().substring(17, 19);
-        let fetchrequest = `https://lol.fandom.com/api.php?action=cargoquery&
+        let fetchRequest = `https://lol.fandom.com/api.php?action=cargoquery&
     format=json&limit=max&tables=ScoreboardGames&fields=WinTeam,Team1,Team2,DateTime_UTC, Tournament&
     where=DateTime_UTC <= '${mutatedNewDate}' AND DateTime_UTC >= '${mutatedOldDate}'`;
-        const finished = yield fetch(fetchrequest);
+        const finished = yield fetch(fetchRequest);
         let date = yield finished.json();
-        for (let i in date.cargoquery) {
-            console.log(date.cargoquery[i].title);
-        }
+        console.log("Flag 2");
         const loggedGames = yield (0, DBHandler_1.find)();
+        console.log("Flag 3");
         let filter = date.cargoquery.filter((element) => {
             for (let i in loggedGames) {
-                if (loggedGames[i]["DateTime UTC"] === element["title"]["DateTime UTC"] && loggedGames[i]["Team1"] == element["title"]["Team1"] && loggedGames[i]["Team2"] === element["title"]["Team2"]) {
+                if (loggedGames[i]["DateTime UTC"] === element["title"]["DateTime UTC"] &&
+                    loggedGames[i]["Team1"] == element["title"]["Team1"] &&
+                    loggedGames[i]["Team2"] === element["title"]["Team2"]) {
+                    (0, DBHandler_1.deleteGame)(loggedGames[i]["_id"].toString());
                     return true;
                 }
             }
             return false;
         });
+        console.log("Flag 3");
         const Guilds = yield (0, DBHandler_1.getAllGuilds)();
-        for (let i in filter) {
+        for (let game in filter) {
+            for (let guild in Guilds) {
+                for (let team in Guilds[guild]["teamSubs"]) {
+                    if (filter[game].title.Team1 === Guilds[guild]["teamSubs"][team].code) {
+                        let channel = client.channels.fetch(Guilds[guild].out);
+                        channel.send({ embeds: [(0, sendMessage_1.sendFinishedGame)(filter[game].title)] });
+                    }
+                }
+            }
         }
     });
 }

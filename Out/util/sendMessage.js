@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendUpcomingGame = void 0;
+exports.sendFinishedGame = exports.sendUpcomingGame = void 0;
 const discord_js_1 = require("discord.js");
 function sendUpcomingGame(game, team) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -32,3 +32,15 @@ function sendUpcomingGame(game, team) {
     });
 }
 exports.sendUpcomingGame = sendUpcomingGame;
+function sendFinishedGame(game) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const Embed = new discord_js_1.EmbedBuilder()
+            .setColor(0x0099FF)
+            .setDescription("A Game from one of your Subscriptions that has ended")
+            .setTitle('Finished Game')
+            .setThumbnail('https://imgur.com/deu1U5t.jpeg')
+            .addFields({ name: "Teams", value: `${game.Team1} vs ${game.Team2}` }, { name: "Time:", value: `${game["DateTime UTC"]} UTC` }, { name: "Winner", value: game["Winning Team"] });
+        return Embed;
+    });
+}
+exports.sendFinishedGame = sendFinishedGame;

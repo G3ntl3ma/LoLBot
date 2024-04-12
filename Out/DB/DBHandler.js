@@ -35,18 +35,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllGuilds = exports.find = exports.findGame = exports.getServerInfo = exports.deleteTeamSub = exports.addTeamSub = exports.updateOutput = exports.deleteGuild = exports.addGuild = void 0;
+exports.deleteGame = exports.getAllGuilds = exports.find = exports.findGame = exports.getServerInfo = exports.deleteTeamSub = exports.addTeamSub = exports.updateOutput = exports.deleteGuild = exports.addGuild = exports.connect = void 0;
 const serverConfig_js_1 = __importStar(require("./serverConfig.js"));
 let mongoose = require('mongoose');
 const config_1 = require("../config");
 let onlineConnection = config_1.ONLINE_CONNECTION;
 let localconnection = 'mongodb://mongodb:27017';
-mongoose.connect(localconnection).then((result) => { console.log("Connected to Database"); });
+class connect {
+    static connect() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.connected)
+                return;
+            else {
+                yield mongoose.connect(localconnection);
+                yield console.log("Connected to Database");
+                this.connected = true;
+                return;
+            }
+        });
+    }
+}
+connect.connected = false;
+exports.connect = connect;
 /**
  * Add a Guild to the Database
  * @param id the ID of the Guild
  */
-function addGuild(id) {
+function addGuild(id, out) {
     return __awaiter(this, void 0, void 0, function* () {
         const config = new serverConfig_js_1.default({
             _id: id,
@@ -125,19 +140,28 @@ function getServerInfo(GuildId) {
 exports.getServerInfo = getServerInfo;
 function findGame(game) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log(game);
         return serverConfig_js_1.gameConfig.find(game);
     });
 }
 exports.findGame = findGame;
 function find() {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log("Flag 4");
         return yield serverConfig_js_1.gameConfig.find();
     });
 }
 exports.find = find;
 function getAllGuilds() {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log("Flag 5");
         return yield serverConfig_js_1.default.find();
     });
 }
 exports.getAllGuilds = getAllGuilds;
+function deleteGame(id) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return yield serverConfig_js_1.gameConfig.deleteOne({ _id: id });
+    });
+}
+exports.deleteGame = deleteGame;

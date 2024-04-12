@@ -16,7 +16,7 @@ const userConfigSchema = new Schema({
     },
     out: {
         type: String,
-        required: false
+        required: true
     },
     teamSubs: [{
             code: {

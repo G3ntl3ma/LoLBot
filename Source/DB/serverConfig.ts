@@ -11,7 +11,7 @@ const userConfigSchema = new Schema({
     },  //ServerID
     out: {
         type: String,
-        required: false
+        required: true
     }, //Output Channel
     teamSubs: [{
         code: {

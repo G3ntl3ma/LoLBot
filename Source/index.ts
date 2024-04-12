@@ -1,13 +1,14 @@
 /**
  * Main file of the Bot
  */
-
-import {Client, IntentsBitField, REST, Routes, Events, Collection} from "discord.js";
+import {Client, IntentsBitField, REST, Routes, Collection} from "discord.js";
 import {DISCORD_TOKEN, DISCORD_CLIENT_ID} from "./config";
 import fs from "fs";
 import path from "path";
-import {updateFinishedGames} from "./util/updateGameFiles";
+import {findNewGames, updateFinishedGames} from "./util/updateGameFiles";
+import {connect} from "./DB/DBHandler";
 
+console.log("tsc still working")
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
@@ -16,7 +17,6 @@ const client = new Client({
 });
 
 client.login(DISCORD_TOKEN)
-
 //@ts-ignore
 client.commands = new Collection()
 //Get all commands and store them in commands
@@ -77,4 +77,14 @@ for (const file of eventFiles) {
     }
 
 }
-updateFinishedGames(client).then(res => console.log("Finished"))
+let newGamesInterval:any = "";
+let finishedGamesInterval:any = "";
+connect.connect()
+    .then(res => findNewGames())
+    .then(res => newGamesInterval = setInterval(findNewGames, 86_400_000))
+    .then(res => updateFinishedGames(client))
+    .then(res => finishedGamesInterval = setInterval(updateFinishedGames, 3_600_000, client))
+    .then(res =>console.log("New Games added!"));
+//const newGamesInterval = setInterval(findNewGames, 86_400_000)
+//updateFinishedGames(client).then(res => console.log("Finished Games updated!"))
+//const finishedGamesInterval = setInterval(updateFinishedGames, 3_600_000, client)

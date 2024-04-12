@@ -10,8 +10,8 @@ export type game = {
     'DateTime UTC': string,
     Team1: string,
     Team2: string,
-    Tournament: string | undefined |null,
-    Winner: string |undefined |null
+    Tournament: string,
+    "Winning Team": string
 }
 /**
  * The Format of how Infos about a Guild are stored
