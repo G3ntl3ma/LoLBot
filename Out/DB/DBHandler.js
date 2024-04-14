@@ -40,7 +40,7 @@ const serverConfig_js_1 = __importStar(require("./serverConfig.js"));
 let mongoose = require('mongoose');
 const config_1 = require("../config");
 let onlineConnection = config_1.ONLINE_CONNECTION;
-let localconnection = 'mongodb://mongodb:27017';
+let localconnection = 'mongodb://localhost:27017';
 class connect {
     static connect() {
         return __awaiter(this, void 0, void 0, function* () {

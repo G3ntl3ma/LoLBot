@@ -8,7 +8,7 @@ import {ONLINE_CONNECTION} from "../config";
 import {serverInfo, game} from "../util/Types";
 
 let onlineConnection = ONLINE_CONNECTION
-let localconnection = 'mongodb://mongodb:27017'
+let localconnection = 'mongodb://localhost:27017'
 
 
 export class connect{
