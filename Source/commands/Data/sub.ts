@@ -1,4 +1,4 @@
-import {SlashCommandBuilder, ChannelType} from "discord.js";
+import {SlashCommandBuilder, Interaction} from "discord.js";
 import {addTeamSub, getServerInfo} from "../../DB/DBHandler";
 import {serverInfo} from "../../util/Types";
 import {sendUpcomingGame} from "../../util/sendMessage";
@@ -33,7 +33,8 @@ module.exports = {
         }
 
         if (Team.length === 0) {
-            interaction.reply("No Team with this Name has been found");
+            console.log("No Team found")
+            await interaction.reply("No Team with this Name has been found");
             return;
         } else {
             const serverInfo: serverInfo = await getServerInfo(interaction.guildId);
@@ -41,17 +42,18 @@ module.exports = {
             for (let i in serverInfo.teamSubs) {
                 if (serverInfo.teamSubs[i].code == Team[0]) alreadySubbed = true;
             }
-
+            console.log(alreadySubbed)
             if (alreadySubbed) {
-                interaction.reply(`You are already Subscribed to ${Team[0]}!`);
+                console.log("Already subbed")
+                await interaction.reply(`You are already Subscribed to ${Team[0]}!`);
                 return;
+
             } else {
                 await addTeamSub(Team[0], interaction.guildId);
 
                 const channel = await interaction.client.channels.fetch(serverInfo.out)
                 let games = await find();
                 for (let i in games) {
-
 
                     if (games[i].Team1 == Team[0] || games[i].Team2 == Team[0]) {
                         //@ts-ignore
@@ -60,7 +62,8 @@ module.exports = {
                             {embeds: [sendEmbed]})
                     }
                 }
-                interaction.reply(`You subscribed to ${Team[0]}!`)
+                console.log("subbed")
+                await interaction.reply(`You subscribed to ${Team[0]}!`)
                 return;
             }
         }

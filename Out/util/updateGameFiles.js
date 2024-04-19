@@ -35,7 +35,7 @@ function findNewGames() {
                 }
             }
             for (let i in games) {
-                const foundGame = yield (0, DBHandler_1.findGame)(games[i]);
+                const foundGame = yield (yield (0, DBHandler_1.findGame)()).find(games[i]);
                 if (foundGame.length == 0 && foundGame.Team1 != "TBD" && foundGame.Team2 != "TBD") {
                     let newGame = new serverConfig_1.gameConfig(games[i]);
                     yield newGame.save();
@@ -59,7 +59,6 @@ function updateFinishedGames(client) {
             newDate.toISOString().substring(11, 13) +
             newDate.toISOString().substring(14, 16) +
             newDate.toISOString().substring(17, 19);
-        console.log("Flag 1");
         let oldDate = new Date();
         oldDate.setDate(oldDate.getUTCDate() - 1);
         const mutatedOldDate = oldDate.toISOString().substring(0, 4) +
@@ -73,9 +72,7 @@ function updateFinishedGames(client) {
     where=DateTime_UTC <= '${mutatedNewDate}' AND DateTime_UTC >= '${mutatedOldDate}'`;
         const finished = yield fetch(fetchRequest);
         let date = yield finished.json();
-        console.log("Flag 2");
         const loggedGames = yield (0, DBHandler_1.find)();
-        console.log("Flag 3");
         let filter = date.cargoquery.filter((element) => {
             for (let i in loggedGames) {
                 if (loggedGames[i]["DateTime UTC"] === element["title"]["DateTime UTC"] &&
@@ -87,12 +84,12 @@ function updateFinishedGames(client) {
             }
             return false;
         });
-        console.log("Flag 3");
         const Guilds = yield (0, DBHandler_1.getAllGuilds)();
         for (let game in filter) {
             for (let guild in Guilds) {
                 for (let team in Guilds[guild]["teamSubs"]) {
                     if (filter[game].title.Team1 === Guilds[guild]["teamSubs"][team].code) {
+                        //@ts-ignore
                         let channel = client.channels.fetch(Guilds[guild].out);
                         channel.send({ embeds: [(0, sendMessage_1.sendFinishedGame)(filter[game].title)] });
                     }

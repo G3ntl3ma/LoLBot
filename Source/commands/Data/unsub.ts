@@ -24,7 +24,6 @@ module.exports = {
         try {
             const teams = await fetch(query);
             const data = await teams.json();
-            console.log("data: ", data)
             for (let i in data.cargoquery) {
                 console.log("Teams: ", data.cargoquery[i].title.Name)
                 Team.push(data.cargoquery[i].title.Name)
@@ -34,7 +33,7 @@ module.exports = {
         }
 
         if (Team.length === 0) {
-            interaction.reply("No Team with this Name has been found");
+            await interaction.reply("No Team with this Name has been found");
             return;
         } else {
             let isSubbed: boolean = false;
@@ -46,9 +45,11 @@ module.exports = {
             if (isSubbed) {
                 console.log(Team[0])
                 console.log(await deleteTeamSub(Team[0], interaction.guildId));
-                interaction.reply(`You unsubscribed from ${Team[0]}!`);
+                await interaction.reply(`You unsubscribed from ${Team[0]}!`);
+                return;
             } else {
-                interaction.reply(`You are not subscribed to ${Team[0]}!`);
+                await interaction.reply(`You are not subscribed to ${Team[0]}!`);
+                return;
             }
         }
     },

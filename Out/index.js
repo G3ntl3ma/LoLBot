@@ -19,15 +19,22 @@ const discord_js_1 = require("discord.js");
 const config_1 = require("./config");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const worker_threads_1 = require("worker_threads");
 const updateGameFiles_1 = require("./util/updateGameFiles");
 const DBHandler_1 = require("./DB/DBHandler");
-console.log("tsc still working");
 const client = new discord_js_1.Client({
     intents: [
         discord_js_1.IntentsBitField.Flags.Guilds,
         discord_js_1.IntentsBitField.Flags.GuildMessages,
         discord_js_1.IntentsBitField.Flags.MessageContent
     ]
+});
+//Create Thread so the main Thread won't get halted too much
+let finishedGamesInterval = "";
+DBHandler_1.connect.connect().then(res => {
+    const newGamesWorker = new worker_threads_1.Worker(__dirname + "/newGames.js");
+    newGamesWorker.postMessage("Start");
+    (0, updateGameFiles_1.updateFinishedGames)(client).then(res => finishedGamesInterval = setInterval(updateGameFiles_1.updateFinishedGames, 3600000, client));
 });
 client.login(config_1.DISCORD_TOKEN);
 //@ts-ignore
@@ -83,14 +90,6 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(...args));
     }
 }
-let newGamesInterval = "";
-let finishedGamesInterval = "";
-DBHandler_1.connect.connect()
-    .then(res => (0, updateGameFiles_1.findNewGames)())
-    .then(res => newGamesInterval = setInterval(updateGameFiles_1.findNewGames, 86400000))
-    .then(res => (0, updateGameFiles_1.updateFinishedGames)(client))
-    .then(res => finishedGamesInterval = setInterval(updateGameFiles_1.updateFinishedGames, 3600000, client))
-    .then(res => console.log("New Games added!"));
 //const newGamesInterval = setInterval(findNewGames, 86_400_000)
 //updateFinishedGames(client).then(res => console.log("Finished Games updated!"))
 //const finishedGamesInterval = setInterval(updateFinishedGames, 3_600_000, client)

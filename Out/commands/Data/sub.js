@@ -39,7 +39,8 @@ module.exports = {
                 console.log("Query has failed");
             }
             if (Team.length === 0) {
-                interaction.reply("No Team with this Name has been found");
+                console.log("No Team found");
+                yield interaction.reply("No Team with this Name has been found");
                 return;
             }
             else {
@@ -49,8 +50,10 @@ module.exports = {
                     if (serverInfo.teamSubs[i].code == Team[0])
                         alreadySubbed = true;
                 }
+                console.log(alreadySubbed);
                 if (alreadySubbed) {
-                    interaction.reply(`You are already Subscribed to ${Team[0]}!`);
+                    console.log("Already subbed");
+                    yield interaction.reply(`You are already Subscribed to ${Team[0]}!`);
                     return;
                 }
                 else {
@@ -64,7 +67,8 @@ module.exports = {
                             yield channel.send({ embeds: [sendEmbed] });
                         }
                     }
-                    interaction.reply(`You subscribed to ${Team[0]}!`);
+                    console.log("subbed");
+                    yield interaction.reply(`You subscribed to ${Team[0]}!`);
                     return;
                 }
             }

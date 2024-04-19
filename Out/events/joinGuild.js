@@ -15,8 +15,9 @@ module.exports = {
     name: discord_js_1.Events.GuildCreate,
     execute(guild) {
         return __awaiter(this, void 0, void 0, function* () {
+            //Set a default output channel for the Games
             // @ts-ignore
-            const result = yield (0, DBHandler_1.addGuild)(guild.id, guild.channels.cache.filter(c => c.type === 'text').find(x => x.position == 0));
+            const result = yield (0, DBHandler_1.addGuild)(guild.id, guild.systemChannelId);
             console.log("New Server has been successfully added!");
         });
     },

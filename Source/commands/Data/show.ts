@@ -11,6 +11,7 @@ module.exports = {
         for(let i in guild.teamSubs){
             output = output + `${guild.teamSubs[i].code}\n`
         }
-        interaction.reply(output)
+        await interaction.reply(output)
+        return;
     }
 };

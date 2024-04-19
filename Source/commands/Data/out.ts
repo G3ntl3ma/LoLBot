@@ -15,6 +15,7 @@ module.exports = {
     async execute(interaction: any){
         const channel = interaction.options.getChannel("channelname");
         await updateOutput(channel.id, interaction.guildId);
-        interaction.reply("Outputchannel has been sucessfully set!")
+        await interaction.reply("Outputchannel has been sucessfully set!");
+        return;
     },
 };

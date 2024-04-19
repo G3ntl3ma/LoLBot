@@ -52,7 +52,7 @@ export async function findNewGames() {
             }
         }
         for (let i in games) {
-            const foundGame: any = await findGame(games[i])
+            const foundGame: any = await (await findGame()).find(games[i])
             if (foundGame.length == 0 && foundGame.Team1 != "TBD" && foundGame.Team2 != "TBD") {
 
                 let newGame = new gameConfig(games[i]);
@@ -77,7 +77,6 @@ export async function updateFinishedGames(client: Client) {
         newDate.toISOString().substring(11, 13) +
         newDate.toISOString().substring(14, 16) +
         newDate.toISOString().substring(17, 19)
-    console.log("Flag 1")
     let oldDate = new Date()
     oldDate.setDate(oldDate.getUTCDate() - 1)
     const mutatedOldDate = oldDate.toISOString().substring(0, 4) +
@@ -91,9 +90,7 @@ export async function updateFinishedGames(client: Client) {
     where=DateTime_UTC <= '${mutatedNewDate}' AND DateTime_UTC >= '${mutatedOldDate}'`
     const finished = await fetch(fetchRequest)
     let date: returnQuery = await finished.json()
-    console.log("Flag 2")
     const loggedGames = await find()
-    console.log("Flag 3")
     let filter = date.cargoquery.filter((element: returnItems) => {
         for (let i in loggedGames) {
             if (loggedGames[i]["DateTime UTC"] === element["title"]["DateTime UTC"] &&
@@ -105,13 +102,13 @@ export async function updateFinishedGames(client: Client) {
         }
         return false
     })
-    console.log("Flag 3")
     const Guilds = await getAllGuilds()
     for (let game in filter) {
         for(let guild in Guilds){
             for(let team in Guilds[guild]["teamSubs"]){
                 if(filter[game].title.Team1 === Guilds[guild]["teamSubs"][team].code){
-                    let channel: any = client.channels.fetch(Guilds[guild].out)
+                        //@ts-ignore
+                    let channel:any = client.channels.fetch(Guilds[guild].out)
                     channel.send({embeds: [sendFinishedGame(filter[game].title)]})
                 }
             }

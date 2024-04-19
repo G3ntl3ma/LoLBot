@@ -8,7 +8,7 @@ import {ONLINE_CONNECTION} from "../config";
 import {serverInfo, game} from "../util/Types";
 
 let onlineConnection = ONLINE_CONNECTION
-let localconnection = 'mongodb://localhost:27017'
+let localconnection = 'mongodb://127.0.0.1:27017'
 
 
 export class connect{
@@ -29,11 +29,11 @@ export class connect{
  * Add a Guild to the Database
  * @param id the ID of the Guild
  */
-export async function addGuild(id:string, out:string){
+export async function addGuild(id:string, out: string){
 const config = new serverConfig({
 
     _id: id,
-    out: ""
+    out: out
 })
     return await config.save();
 }
@@ -95,17 +95,14 @@ export async function getServerInfo(GuildId: string){
     return info;
 }
 
-export async function findGame(game :game){
-    console.log(game)
-    return gameConfig.find(game);
+export async function findGame(){
+    return await gameConfig
 }
 
 export async function find(){
-    console.log("Flag 4")
     return await gameConfig.find();
 }
 export async function getAllGuilds(){
-    console.log("Flag 5")
     return await serverConfig.find();
 }
 export async function deleteGame(id: string){

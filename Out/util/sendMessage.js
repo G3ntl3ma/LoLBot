@@ -16,8 +16,6 @@ function sendUpcomingGame(game, team) {
         let logoURL = "https://imgur.com/deu1U5t.jpeg";
         const info = yield fetch(`https://lol.fandom.com/api.php?action=query&format=json&prop=imageinfo&titles=File:${team}logo%20square.png&iiprop=url`);
         const data = yield info.json();
-        console.log(team);
-        console.log(data["query"]["pages"]);
         for (let i in data["query"]["pages"]) {
             logoURL = data["query"]["pages"][i]["imageinfo"][0]["url"];
         }

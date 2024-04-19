@@ -30,7 +30,6 @@ module.exports = {
             try {
                 const teams = yield fetch(query);
                 const data = yield teams.json();
-                console.log("data: ", data);
                 for (let i in data.cargoquery) {
                     console.log("Teams: ", data.cargoquery[i].title.Name);
                     Team.push(data.cargoquery[i].title.Name);
@@ -40,7 +39,7 @@ module.exports = {
                 console.log("Query has failed");
             }
             if (Team.length === 0) {
-                interaction.reply("No Team with this Name has been found");
+                yield interaction.reply("No Team with this Name has been found");
                 return;
             }
             else {
@@ -53,10 +52,12 @@ module.exports = {
                 if (isSubbed) {
                     console.log(Team[0]);
                     console.log(yield (0, DBHandler_1.deleteTeamSub)(Team[0], interaction.guildId));
-                    interaction.reply(`You unsubscribed from ${Team[0]}!`);
+                    yield interaction.reply(`You unsubscribed from ${Team[0]}!`);
+                    return;
                 }
                 else {
-                    interaction.reply(`You are not subscribed to ${Team[0]}!`);
+                    yield interaction.reply(`You are not subscribed to ${Team[0]}!`);
+                    return;
                 }
             }
         });
