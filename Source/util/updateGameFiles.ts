@@ -58,9 +58,9 @@ export async function findNewGames() {
                 let newGame = new gameConfig(games[i]);
                 await newGame.save()
             }
-
         }
     }
+    console.log("New Games Iteration Finished")
 }
 
 /**
@@ -114,5 +114,6 @@ export async function updateFinishedGames(client: Client) {
             }
         }
     }
+    console.log("Finished Games iteration Finished")
 }
 

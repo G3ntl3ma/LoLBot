@@ -42,6 +42,7 @@ function findNewGames() {
                 }
             }
         }
+        console.log("New Games Iteration Finished");
     });
 }
 exports.findNewGames = findNewGames;
@@ -96,6 +97,7 @@ function updateFinishedGames(client) {
                 }
             }
         }
+        console.log("Finished Games iteration Finished");
     });
 }
 exports.updateFinishedGames = updateFinishedGames;
