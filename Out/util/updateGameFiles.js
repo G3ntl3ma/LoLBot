@@ -89,7 +89,12 @@ function updateFinishedGames(client) {
         for (let game in filter) {
             for (let guild in Guilds) {
                 for (let team in Guilds[guild]["teamSubs"]) {
-                    if (filter[game].title.Team1 === Guilds[guild]["teamSubs"][team].code) {
+                    console.log("Team 1: ", filter[game].title.Team1);
+                    console.log("Team 2: ", filter[game].title.Team2);
+                    console.log("Subscription: ", Guilds[guild]["teamSubs"][team].code);
+                    if (filter[game].title.Team1 === Guilds[guild]["teamSubs"][team].code ||
+                        filter[game].title.Team2 === Guilds[guild]["teamSubs"][team].code) {
+                        console.log("Match Found");
                         //@ts-ignore
                         let channel = client.channels.fetch(Guilds[guild].out);
                         channel.send({ embeds: [(0, sendMessage_1.sendFinishedGame)(filter[game].title)] });
