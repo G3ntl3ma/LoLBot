@@ -19,6 +19,7 @@ const discord_js_1 = require("discord.js");
 const config_1 = require("./config");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const worker_threads_1 = require("worker_threads");
 const updateGameFiles_1 = require("./util/updateGameFiles");
 const DBHandler_1 = require("./DB/DBHandler");
 const client = new discord_js_1.Client({
@@ -31,8 +32,8 @@ const client = new discord_js_1.Client({
 //Create Thread so the main Thread won't get halted too much
 let finishedGamesInterval = "";
 DBHandler_1.connect.connect().then(res => {
-    //const newGamesWorker = new Worker(__dirname + "/newGames.js");
-    //newGamesWorker.postMessage("Start")
+    const newGamesWorker = new worker_threads_1.Worker(__dirname + "/newGames.js");
+    newGamesWorker.postMessage("Start");
     (0, updateGameFiles_1.updateFinishedGames)(client).then(res => finishedGamesInterval = setInterval(updateGameFiles_1.updateFinishedGames, 3600000, client));
 });
 client.login(config_1.DISCORD_TOKEN);

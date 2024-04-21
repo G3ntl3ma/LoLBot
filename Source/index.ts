@@ -20,8 +20,8 @@ const client = new Client({
 //Create Thread so the main Thread won't get halted too much
 let finishedGamesInterval:any = "";
 connect.connect().then(res => {
-    //const newGamesWorker = new Worker(__dirname + "/newGames.js");
-    //newGamesWorker.postMessage("Start")
+    const newGamesWorker = new Worker(__dirname + "/newGames.js");
+    newGamesWorker.postMessage("Start")
     updateFinishedGames(client).then(res => finishedGamesInterval = setInterval(updateFinishedGames, 3_600_000, client))
 
 })
