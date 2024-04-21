@@ -91,30 +91,33 @@ export async function updateFinishedGames(client: Client) {
     const finished = await fetch(fetchRequest)
     let date: returnQuery = await finished.json()
     const loggedGames = await find()
-    let filter = date.cargoquery.filter((element: returnItems) => {
-        for (let i in loggedGames) {
-            if (loggedGames[i]["DateTime UTC"] === element["title"]["DateTime UTC"] &&
-                loggedGames[i]["Team1"] == element["title"]["Team1"] &&
-                loggedGames[i]["Team2"] === element["title"]["Team2"]) {
-                deleteGame(loggedGames[i]["_id"].toString())
-                return true
+    let filter = []
+    for(let j of date.cargoquery) {
+        for (let i of loggedGames) {
+
+            if (i["DateTime UTC"] ===j["title"]["DateTime UTC"] &&
+                i["Team1"] === j["title"]["Team1"] &&
+                i["Team2"] ===j["title"]["Team2"]) {
+                deleteGame(i["_id"].toString())
+                filter.push(j)
             }
         }
-        return false
-    })
+    }
+
+    console.log(filter)
     const Guilds = await getAllGuilds()
     for (let game in filter) {
         for(let guild in Guilds){
             for(let team in Guilds[guild]["teamSubs"]){
-                console.log("Team 1: ", filter[game].title.Team1)
-                console.log("Team 2: ", filter[game].title.Team2)
-                console.log("Subscription: ", Guilds[guild]["teamSubs"][team].code)
                 if(filter[game].title.Team1 === Guilds[guild]["teamSubs"][team].code ||
                     filter[game].title.Team2 === Guilds[guild]["teamSubs"][team].code){
                     console.log("Match Found")
+                    let currentGuild: any = await client.guilds.fetch(Guilds[guild]["_id"])
+                    console.log(Guilds[guild]["_id"])
+                    console.log(Guilds[guild].out)
                     //@ts-ignore
-                    let channel:any = client.channels.fetch(Guilds[guild].out)
-                    channel.send({embeds: [sendFinishedGame(filter[game].title)]})
+                    let channel:any = await client.channels.fetch(Guilds[guild].out)
+                    await channel.send({embeds: [await sendFinishedGame(filter[game].title)]})
                 }
             }
         }

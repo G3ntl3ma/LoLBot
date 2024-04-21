@@ -24,17 +24,17 @@ export async function sendUpcomingGame(game: game, team: string){
     return Embed
 }
 
-export async function sendFinishedGame(game: game){
+export async function sendFinishedGame(game: any){
 
     const Embed = new EmbedBuilder()
         .setColor(0x0099FF)
-        .setDescription("A Game from one of your Subscriptions that has ended")
+        .setDescription("A Game has finished")
         .setTitle('Finished Game')
         .setThumbnail('https://imgur.com/deu1U5t.jpeg')
         .addFields(
             { name: "Teams", value: `${game.Team1} vs ${game.Team2}` },
             {name : "Time:", value:`${game["DateTime UTC"]} UTC`},
-            {name : "Winner", value: game["Winning Team"]}
+            {name : "Winner", value: game["WinTeam"]}
         )
     return Embed
 }

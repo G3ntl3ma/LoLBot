@@ -34,10 +34,10 @@ function sendFinishedGame(game) {
     return __awaiter(this, void 0, void 0, function* () {
         const Embed = new discord_js_1.EmbedBuilder()
             .setColor(0x0099FF)
-            .setDescription("A Game from one of your Subscriptions that has ended")
+            .setDescription("A Game has finished")
             .setTitle('Finished Game')
             .setThumbnail('https://imgur.com/deu1U5t.jpeg')
-            .addFields({ name: "Teams", value: `${game.Team1} vs ${game.Team2}` }, { name: "Time:", value: `${game["DateTime UTC"]} UTC` }, { name: "Winner", value: game["Winning Team"] });
+            .addFields({ name: "Teams", value: `${game.Team1} vs ${game.Team2}` }, { name: "Time:", value: `${game["DateTime UTC"]} UTC` }, { name: "Winner", value: game["WinTeam"] });
         return Embed;
     });
 }

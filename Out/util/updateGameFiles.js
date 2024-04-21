@@ -74,30 +74,31 @@ function updateFinishedGames(client) {
         const finished = yield fetch(fetchRequest);
         let date = yield finished.json();
         const loggedGames = yield (0, DBHandler_1.find)();
-        let filter = date.cargoquery.filter((element) => {
-            for (let i in loggedGames) {
-                if (loggedGames[i]["DateTime UTC"] === element["title"]["DateTime UTC"] &&
-                    loggedGames[i]["Team1"] == element["title"]["Team1"] &&
-                    loggedGames[i]["Team2"] === element["title"]["Team2"]) {
-                    (0, DBHandler_1.deleteGame)(loggedGames[i]["_id"].toString());
-                    return true;
+        let filter = [];
+        for (let j of date.cargoquery) {
+            for (let i of loggedGames) {
+                if (i["DateTime UTC"] === j["title"]["DateTime UTC"] &&
+                    i["Team1"] === j["title"]["Team1"] &&
+                    i["Team2"] === j["title"]["Team2"]) {
+                    (0, DBHandler_1.deleteGame)(i["_id"].toString());
+                    filter.push(j);
                 }
             }
-            return false;
-        });
+        }
+        console.log(filter);
         const Guilds = yield (0, DBHandler_1.getAllGuilds)();
         for (let game in filter) {
             for (let guild in Guilds) {
                 for (let team in Guilds[guild]["teamSubs"]) {
-                    console.log("Team 1: ", filter[game].title.Team1);
-                    console.log("Team 2: ", filter[game].title.Team2);
-                    console.log("Subscription: ", Guilds[guild]["teamSubs"][team].code);
                     if (filter[game].title.Team1 === Guilds[guild]["teamSubs"][team].code ||
                         filter[game].title.Team2 === Guilds[guild]["teamSubs"][team].code) {
                         console.log("Match Found");
+                        let currentGuild = yield client.guilds.fetch(Guilds[guild]["_id"]);
+                        console.log(Guilds[guild]["_id"]);
+                        console.log(Guilds[guild].out);
                         //@ts-ignore
-                        let channel = client.channels.fetch(Guilds[guild].out);
-                        channel.send({ embeds: [(0, sendMessage_1.sendFinishedGame)(filter[game].title)] });
+                        let channel = yield client.channels.fetch(Guilds[guild].out);
+                        yield channel.send({ embeds: [yield (0, sendMessage_1.sendFinishedGame)(filter[game].title)] });
                     }
                 }
             }
