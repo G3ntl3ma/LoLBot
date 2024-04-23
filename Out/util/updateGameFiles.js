@@ -24,7 +24,8 @@ function findNewGames() {
             const data = yield info.json();
             let games = [];
             for (let i in data.cargoquery) {
-                if (typeof (data.cargoquery[i].title["DateTime UTC"]) != "undefined") {
+                if (typeof (data.cargoquery[i].title["DateTime UTC"]) != "undefined" && data.cargoquery[i].title["Winner"] == null) {
+                    console.log(data.cargoquery[i].title.Winner);
                     games.push({
                         Team1: data.cargoquery[i].title.Team1,
                         Team2: data.cargoquery[i].title.Team2,
@@ -61,7 +62,7 @@ function updateFinishedGames(client) {
             newDate.toISOString().substring(14, 16) +
             newDate.toISOString().substring(17, 19);
         let oldDate = new Date();
-        oldDate.setDate(oldDate.getUTCDate() - 1);
+        oldDate.setDate(oldDate.getUTCDate() - 2);
         const mutatedOldDate = oldDate.toISOString().substring(0, 4) +
             oldDate.toISOString().substring(5, 7) +
             oldDate.toISOString().substring(8, 10) +
@@ -69,7 +70,7 @@ function updateFinishedGames(client) {
             oldDate.toISOString().substring(14, 16) +
             oldDate.toISOString().substring(17, 19);
         let fetchRequest = `https://lol.fandom.com/api.php?action=cargoquery&
-    format=json&limit=max&tables=ScoreboardGames&fields=WinTeam,Team1,Team2,DateTime_UTC, Tournament&
+    format=json&limit=max&tables=MatchSchedule&fields=Winner,Team1,Team2,DateTime_UTC&
     where=DateTime_UTC <= '${mutatedNewDate}' AND DateTime_UTC >= '${mutatedOldDate}'`;
         const finished = yield fetch(fetchRequest);
         let date = yield finished.json();
@@ -77,7 +78,8 @@ function updateFinishedGames(client) {
         let filter = [];
         for (let j of date.cargoquery) {
             for (let i of loggedGames) {
-                if (i["DateTime UTC"] === j["title"]["DateTime UTC"] &&
+                if (j["title"]["Winner"] != null &&
+                    i["DateTime UTC"] === j["title"]["DateTime UTC"] &&
                     i["Team1"] === j["title"]["Team1"] &&
                     i["Team2"] === j["title"]["Team2"]) {
                     (0, DBHandler_1.deleteGame)(i["_id"].toString());
@@ -85,7 +87,6 @@ function updateFinishedGames(client) {
                 }
             }
         }
-        console.log(filter);
         const Guilds = yield (0, DBHandler_1.getAllGuilds)();
         for (let game in filter) {
             for (let guild in Guilds) {
@@ -93,9 +94,6 @@ function updateFinishedGames(client) {
                     if (filter[game].title.Team1 === Guilds[guild]["teamSubs"][team].code ||
                         filter[game].title.Team2 === Guilds[guild]["teamSubs"][team].code) {
                         console.log("Match Found");
-                        let currentGuild = yield client.guilds.fetch(Guilds[guild]["_id"]);
-                        console.log(Guilds[guild]["_id"]);
-                        console.log(Guilds[guild].out);
                         //@ts-ignore
                         let channel = yield client.channels.fetch(Guilds[guild].out);
                         yield channel.send({ embeds: [yield (0, sendMessage_1.sendFinishedGame)(filter[game].title)] });

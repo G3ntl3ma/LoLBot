@@ -25,7 +25,10 @@ export async function sendUpcomingGame(game: game, team: string){
 }
 
 export async function sendFinishedGame(game: any){
-
+    let Winner = game.Team1
+    if(game.Winner === "2"){
+        Winner = game.Team2
+    }
     const Embed = new EmbedBuilder()
         .setColor(0x0099FF)
         .setDescription("A Game has finished")
@@ -34,7 +37,7 @@ export async function sendFinishedGame(game: any){
         .addFields(
             { name: "Teams", value: `${game.Team1} vs ${game.Team2}` },
             {name : "Time:", value:`${game["DateTime UTC"]} UTC`},
-            {name : "Winner", value: game["WinTeam"]}
+            {name : "Winner", value: Winner}
         )
     return Embed
 }

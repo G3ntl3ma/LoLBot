@@ -16,7 +16,7 @@ import {sendFinishedGame, sendUpcomingGame} from "./sendMessage";
 
 type returnItems = {
     title: {
-        "Winning Team": string,
+        "Winner": string,
         Team1: string,
         Team2: string,
         "DateTime UTC": string,
@@ -41,7 +41,7 @@ export async function findNewGames() {
         let games : game[] = [] ;
 
         for(let i in data.cargoquery) {
-            if (typeof (data.cargoquery[i].title["DateTime UTC"]) != "undefined") {
+            if (typeof (data.cargoquery[i].title["DateTime UTC"]) != "undefined" && data.cargoquery[i].title["Winner"] == null) {
                 games.push({
                     Team1: data.cargoquery[i].title.Team1,
                     Team2: data.cargoquery[i].title.Team2,
@@ -78,7 +78,7 @@ export async function updateFinishedGames(client: Client) {
         newDate.toISOString().substring(14, 16) +
         newDate.toISOString().substring(17, 19)
     let oldDate = new Date()
-    oldDate.setDate(oldDate.getUTCDate() - 1)
+    oldDate.setDate(oldDate.getUTCDate() - 2)
     const mutatedOldDate = oldDate.toISOString().substring(0, 4) +
         oldDate.toISOString().substring(5, 7) +
         oldDate.toISOString().substring(8, 10) +
@@ -86,7 +86,7 @@ export async function updateFinishedGames(client: Client) {
         oldDate.toISOString().substring(14, 16) +
         oldDate.toISOString().substring(17, 19)
     let fetchRequest: string =  `https://lol.fandom.com/api.php?action=cargoquery&
-    format=json&limit=max&tables=ScoreboardGames&fields=WinTeam,Team1,Team2,DateTime_UTC, Tournament&
+    format=json&limit=max&tables=MatchSchedule&fields=Winner,Team1,Team2,DateTime_UTC&
     where=DateTime_UTC <= '${mutatedNewDate}' AND DateTime_UTC >= '${mutatedOldDate}'`
     const finished = await fetch(fetchRequest)
     let date: returnQuery = await finished.json()
@@ -94,8 +94,8 @@ export async function updateFinishedGames(client: Client) {
     let filter = []
     for(let j of date.cargoquery) {
         for (let i of loggedGames) {
-
-            if (i["DateTime UTC"] ===j["title"]["DateTime UTC"] &&
+            if (j["title"]["Winner"] != null&&
+                i["DateTime UTC"] ===j["title"]["DateTime UTC"] &&
                 i["Team1"] === j["title"]["Team1"] &&
                 i["Team2"] ===j["title"]["Team2"]) {
                 deleteGame(i["_id"].toString())
@@ -104,7 +104,6 @@ export async function updateFinishedGames(client: Client) {
         }
     }
 
-    console.log(filter)
     const Guilds = await getAllGuilds()
     for (let game in filter) {
         for(let guild in Guilds){
@@ -112,9 +111,6 @@ export async function updateFinishedGames(client: Client) {
                 if(filter[game].title.Team1 === Guilds[guild]["teamSubs"][team].code ||
                     filter[game].title.Team2 === Guilds[guild]["teamSubs"][team].code){
                     console.log("Match Found")
-                    let currentGuild: any = await client.guilds.fetch(Guilds[guild]["_id"])
-                    console.log(Guilds[guild]["_id"])
-                    console.log(Guilds[guild].out)
                     //@ts-ignore
                     let channel:any = await client.channels.fetch(Guilds[guild].out)
                     await channel.send({embeds: [await sendFinishedGame(filter[game].title)]})
