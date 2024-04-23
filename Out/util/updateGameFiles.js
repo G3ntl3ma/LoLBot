@@ -25,7 +25,6 @@ function findNewGames() {
             let games = [];
             for (let i in data.cargoquery) {
                 if (typeof (data.cargoquery[i].title["DateTime UTC"]) != "undefined" && data.cargoquery[i].title["Winner"] == null) {
-                    console.log(data.cargoquery[i].title.Winner);
                     games.push({
                         Team1: data.cargoquery[i].title.Team1,
                         Team2: data.cargoquery[i].title.Team2,
