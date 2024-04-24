@@ -23,6 +23,7 @@ module.exports = {
         .setRequired(true)),
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
+            yield interaction.deferReply();
             let teamName = interaction.options.getString("teamname");
             let query = `https://lol.fandom.com/api.php?action=cargoquery&
         format=json&limit=max&tables=Teams&fields=Name&
@@ -40,7 +41,7 @@ module.exports = {
             }
             if (Team.length === 0) {
                 console.log("No Team found");
-                yield interaction.reply("No Team with this Name has been found");
+                yield interaction.editReply("No Team with this Name has been found");
                 return;
             }
             else {
@@ -53,7 +54,7 @@ module.exports = {
                 console.log(alreadySubbed);
                 if (alreadySubbed) {
                     console.log("Already subbed");
-                    yield interaction.reply(`You are already Subscribed to ${Team[0]}!`);
+                    yield interaction.editReply(`You are already Subscribed to ${Team[0]}!`);
                     return;
                 }
                 else {
@@ -68,7 +69,7 @@ module.exports = {
                         }
                     }
                     console.log("subbed");
-                    yield interaction.reply(`You subscribed to ${Team[0]}!`);
+                    yield interaction.editReply(`You subscribed to ${Team[0]}!`);
                     return;
                 }
             }

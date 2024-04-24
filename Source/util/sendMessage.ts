@@ -25,8 +25,14 @@ export async function sendUpcomingGame(game: game, team: string){
 }
 
 export async function sendFinishedGame(game: any){
-    let Winner = game.Team1
-    if(game.Winner === "2"){
+    let Winner = ""
+    if(game.WinTeam ! = undefined){
+        Winner = game.WinTeam
+    }
+    else if(game.Winner === "1"){
+        Winner = game.Team1
+    }
+    else{
         Winner = game.Team2
     }
     const Embed = new EmbedBuilder()

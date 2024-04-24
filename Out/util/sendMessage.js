@@ -32,8 +32,14 @@ function sendUpcomingGame(game, team) {
 exports.sendUpcomingGame = sendUpcomingGame;
 function sendFinishedGame(game) {
     return __awaiter(this, void 0, void 0, function* () {
-        let Winner = game.Team1;
-        if (game.Winner === "2") {
+        let Winner = "";
+        if (game.WinTeam = undefined) {
+            Winner = game.WinTeam;
+        }
+        else if (game.Winner === "1") {
+            Winner = game.Team1;
+        }
+        else {
             Winner = game.Team2;
         }
         const Embed = new discord_js_1.EmbedBuilder()

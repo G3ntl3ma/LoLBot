@@ -15,6 +15,7 @@ module.exports = {
                 .setRequired(true)
         ),
     async execute(interaction: any) {
+        await interaction.deferReply();
         let teamName = interaction.options.getString("teamname")
         let query: string = `https://lol.fandom.com/api.php?action=cargoquery&
         format=json&limit=max&tables=Teams&fields=Name&
@@ -34,7 +35,7 @@ module.exports = {
 
         if (Team.length === 0) {
             console.log("No Team found")
-            await interaction.reply("No Team with this Name has been found");
+            await interaction.editReply("No Team with this Name has been found");
             return;
         } else {
             const serverInfo: serverInfo = await getServerInfo(interaction.guildId);
@@ -45,7 +46,7 @@ module.exports = {
             console.log(alreadySubbed)
             if (alreadySubbed) {
                 console.log("Already subbed")
-                await interaction.reply(`You are already Subscribed to ${Team[0]}!`);
+                await interaction.editReply(`You are already Subscribed to ${Team[0]}!`);
                 return;
 
             } else {
@@ -63,7 +64,7 @@ module.exports = {
                     }
                 }
                 console.log("subbed")
-                await interaction.reply(`You subscribed to ${Team[0]}!`)
+                await interaction.editReply(`You subscribed to ${Team[0]}!`)
                 return;
             }
         }

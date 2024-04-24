@@ -16,13 +16,28 @@ const mutatedOldDate = oldDate.toISOString().substring(0, 4) +
     oldDate.toISOString().substring(11, 13) +
     oldDate.toISOString().substring(14, 16) +
     oldDate.toISOString().substring(17, 19)
-let fetchRequest =  `https://lol.fandom.com/api.php?action=cargoquery&
+let fetchRequest = `https://lol.fandom.com/api.php?action=cargoquery&
     format=json&limit=max&tables=ScoreboardGames&fields=WinTeam,Team1,Team2,DateTime_UTC, Tournament&
-    where=DateTime_UTC <= '${mutatedNewDate}' AND DateTime_UTC >= '${mutatedOldDate}'`
-fetch(fetchRequest).then(res => res.json()).then(date => {
-    for(let i in date.cargoquery){
-        if(date.cargoquery[i].title.Team1 === 'LOUD' || date.cargoquery[i].Team2 === 'LOUD'){
-            console.log(date.cargoquery[i])
+    where=DateTime_UTC >= '${mutatedOldDate}'`
+
+let secondRequest =  `https://lol.fandom.com/api.php?action=cargoquery&
+    format=json&limit=max&tables=MatchSchedule&fields=Winner,Team1,Team2,DateTime_UTC&
+    where=DateTime_UTC >= '${mutatedOldDate}'`
+
+Promise.all([
+    fetch(fetchRequest).then(res => res.json()),
+    fetch(secondRequest).then(res => res.json())
+]).then(([res1, res2]) => {
+
+    let common = []
+    for(let i of res1.cargoquery){
+        for(let j of res2.cargoquery){
+            console.log(i.title.Team1)
+            console.log(j.title.Team1)
+            if(i.title.Team1 === j.title.Team1 && j.title.Team2 === i.title.Team2 && j.title["DateTime UTC"] === i.title["DateTime UTC"]){
+                common.push(i.title)
+            }
         }
     }
+    console.log(common)
 })

@@ -33,21 +33,40 @@ export async function findNewGames() {
 
         let date = new Date()
         date.setDate(date.getUTCDate() + i)
-        const info = await fetch(
+        const matchSchedule = await fetch(
             `https://lol.fandom.com/api.php?action=cargoquery&
             format=json&limit=max&tables=MatchSchedule&fields=Team1,Team2, DateTime_UTC, Winner&
             where=DateTime_UTC like '${date.toISOString().substring(0, 10)}%'`);
-        const data = await info.json();
+        const matchScheduleData = await matchSchedule.json();
+
+        const scoreBoardGames = await fetch(
+         `https://lol.fandom.com/api.php?action=cargoquery&
+        format=json&limit=max&tables=ScoreboardGames&fields=WinTeam,Team1,Team2,DateTime_UTC, Tournament&
+        where=DateTime_UTC like '${date.toISOString().substring(0, 10)}%'`
+        )
+        const scoreBoardGamesData = await scoreBoardGames.json();
         let games : game[] = [] ;
 
-        for(let i in data.cargoquery) {
-            if (typeof (data.cargoquery[i].title["DateTime UTC"]) != "undefined" && data.cargoquery[i].title["Winner"] == null) {
+        for(let i of matchScheduleData.cargoquery) {
+            if (typeof (i.title["DateTime UTC"]) != "undefined" && i.title["Winner"] == null) {
                 games.push({
-                    Team1: data.cargoquery[i].title.Team1,
-                    Team2: data.cargoquery[i].title.Team2,
-                    'DateTime UTC': data.cargoquery[i].title["DateTime UTC"],
+                    Team1: i.title.Team1,
+                    Team2: i.title.Team2,
+                    'DateTime UTC': i.title["DateTime UTC"],
                     Tournament: "",
-                    'Winning Team': data.cargoquery[i].title.Winner
+                    'Winning Team': i.title.Winner
+                })
+            }
+        }
+
+        for(let i of scoreBoardGamesData.cargoquery) {
+            if (typeof (i.title["DateTime UTC"]) != "undefined" && i.title["WinTeam"] == null) {
+                games.push({
+                    Team1: i.title.Team1,
+                    Team2: i.title.Team2,
+                    'DateTime UTC': i.title["DateTime UTC"],
+                    Tournament: i.title.Tournament,
+                    'Winning Team': i.title.WinTeam
                 })
             }
         }
@@ -85,16 +104,36 @@ export async function updateFinishedGames(client: Client) {
         oldDate.toISOString().substring(11, 13) +
         oldDate.toISOString().substring(14, 16) +
         oldDate.toISOString().substring(17, 19)
-    let fetchRequest: string =  `https://lol.fandom.com/api.php?action=cargoquery&
+    let scheduleGamesRequest: string =  `https://lol.fandom.com/api.php?action=cargoquery&
     format=json&limit=max&tables=MatchSchedule&fields=Winner,Team1,Team2,DateTime_UTC&
     where=DateTime_UTC <= '${mutatedNewDate}' AND DateTime_UTC >= '${mutatedOldDate}'`
-    const finished = await fetch(fetchRequest)
-    let date: returnQuery = await finished.json()
+    const scheduleGamesResponse = await fetch(scheduleGamesRequest)
+    const scheduleGamesData: returnQuery = await scheduleGamesResponse.json()
+
+    const scoreBoardGamesRequest: string =  `https://lol.fandom.com/api.php?action=cargoquery&
+    format=json&limit=max&tables=ScoreboardGames&fields=WinTeam,Team1,Team2,DateTime_UTC&
+    where=DateTime_UTC <= '${mutatedNewDate}' AND DateTime_UTC >= '${mutatedOldDate}'`
+    const scoreBoardGamesResponse = await fetch(scoreBoardGamesRequest)
+    const scoreBoardGamesData: returnQuery = await scoreBoardGamesResponse.json()
+
     const loggedGames = await find()
     let filter = []
-    for(let j of date.cargoquery) {
+    for(let j of scheduleGamesData.cargoquery) {
         for (let i of loggedGames) {
             if (j["title"]["Winner"] != null&&
+                i["DateTime UTC"] ===j["title"]["DateTime UTC"] &&
+                i["Team1"] === j["title"]["Team1"] &&
+                i["Team2"] ===j["title"]["Team2"]) {
+                deleteGame(i["_id"].toString())
+                filter.push(j)
+            }
+        }
+    }
+
+    for(let j of scoreBoardGamesData.cargoquery) {
+        for (let i of loggedGames) {
+            // @ts-ignore
+            if (j["title"]["WinTeam"] != null&&
                 i["DateTime UTC"] ===j["title"]["DateTime UTC"] &&
                 i["Team1"] === j["title"]["Team1"] &&
                 i["Team2"] ===j["title"]["Team2"]) {
