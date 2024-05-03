@@ -1,6 +1,6 @@
 import {game} from "./Types";
 import {gameConfig} from "../DB/serverConfig";
-import {findGame, getAllGuilds, find, deleteGame} from "../DB/DBHandler";
+import {getGames, getGuild} from "../DB/DBHandler";
 import {Client} from "discord.js"
 import {sendFinishedGame, sendUpcomingGame} from "./sendMessage";
 
@@ -71,7 +71,7 @@ export async function findNewGames() {
             }
         }
         for (let i in games) {
-            const foundGame: any = await (await findGame()).find(games[i])
+            const foundGame: any = await (await getGames()).find(games[i])
             if (foundGame.length == 0 && foundGame.Team1 != "TBD" && foundGame.Team2 != "TBD") {
 
                 let newGame = new gameConfig(games[i]);
@@ -116,7 +116,7 @@ export async function updateFinishedGames(client: Client) {
     const scoreBoardGamesResponse = await fetch(scoreBoardGamesRequest)
     const scoreBoardGamesData: returnQuery = await scoreBoardGamesResponse.json()
 
-    const loggedGames = await find()
+    const loggedGames = await (await getGames()).find()
     let filter = []
     for(let j of scheduleGamesData.cargoquery) {
         for (let i of loggedGames) {
@@ -124,7 +124,7 @@ export async function updateFinishedGames(client: Client) {
                 i["DateTime UTC"] ===j["title"]["DateTime UTC"] &&
                 i["Team1"] === j["title"]["Team1"] &&
                 i["Team2"] ===j["title"]["Team2"]) {
-                deleteGame(i["_id"].toString())
+                await (await getGames()).deleteOne({_id:i["_id"].toString()})
                 filter.push(j)
             }
         }
@@ -137,13 +137,13 @@ export async function updateFinishedGames(client: Client) {
                 i["DateTime UTC"] ===j["title"]["DateTime UTC"] &&
                 i["Team1"] === j["title"]["Team1"] &&
                 i["Team2"] ===j["title"]["Team2"]) {
-                deleteGame(i["_id"].toString())
+                await (await getGames()).deleteOne({_id:i["_id"].toString()})
                 filter.push(j)
             }
         }
     }
 
-    const Guilds = await getAllGuilds()
+    const Guilds = await (await getGuild()).find()
     for (let game in filter) {
         for(let guild in Guilds){
             for(let team in Guilds[guild]["teamSubs"]){

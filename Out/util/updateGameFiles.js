@@ -50,7 +50,7 @@ function findNewGames() {
                 }
             }
             for (let i in games) {
-                const foundGame = yield (yield (0, DBHandler_1.findGame)()).find(games[i]);
+                const foundGame = yield (yield (0, DBHandler_1.getGames)()).find(games[i]);
                 if (foundGame.length == 0 && foundGame.Team1 != "TBD" && foundGame.Team2 != "TBD") {
                     let newGame = new serverConfig_1.gameConfig(games[i]);
                     yield newGame.save();
@@ -93,7 +93,7 @@ function updateFinishedGames(client) {
     where=DateTime_UTC <= '${mutatedNewDate}' AND DateTime_UTC >= '${mutatedOldDate}'`;
         const scoreBoardGamesResponse = yield fetch(scoreBoardGamesRequest);
         const scoreBoardGamesData = yield scoreBoardGamesResponse.json();
-        const loggedGames = yield (0, DBHandler_1.find)();
+        const loggedGames = yield (yield (0, DBHandler_1.getGames)()).find();
         let filter = [];
         for (let j of scheduleGamesData.cargoquery) {
             for (let i of loggedGames) {
@@ -101,7 +101,7 @@ function updateFinishedGames(client) {
                     i["DateTime UTC"] === j["title"]["DateTime UTC"] &&
                     i["Team1"] === j["title"]["Team1"] &&
                     i["Team2"] === j["title"]["Team2"]) {
-                    (0, DBHandler_1.deleteGame)(i["_id"].toString());
+                    yield (yield (0, DBHandler_1.getGames)()).deleteOne({ _id: i["_id"].toString() });
                     filter.push(j);
                 }
             }
@@ -113,12 +113,12 @@ function updateFinishedGames(client) {
                     i["DateTime UTC"] === j["title"]["DateTime UTC"] &&
                     i["Team1"] === j["title"]["Team1"] &&
                     i["Team2"] === j["title"]["Team2"]) {
-                    (0, DBHandler_1.deleteGame)(i["_id"].toString());
+                    yield (yield (0, DBHandler_1.getGames)()).deleteOne({ _id: i["_id"].toString() });
                     filter.push(j);
                 }
             }
         }
-        const Guilds = yield (0, DBHandler_1.getAllGuilds)();
+        const Guilds = yield (yield (0, DBHandler_1.getGuild)()).find();
         for (let game in filter) {
             for (let guild in Guilds) {
                 for (let team in Guilds[guild]["teamSubs"]) {

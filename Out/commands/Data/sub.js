@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const DBHandler_1 = require("../../DB/DBHandler");
 const sendMessage_1 = require("../../util/sendMessage");
-const DBHandler_2 = require("../../DB/DBHandler");
 module.exports = {
     data: new discord_js_1.SlashCommandBuilder()
         .setName("sub")
@@ -58,9 +57,9 @@ module.exports = {
                     return;
                 }
                 else {
-                    yield (0, DBHandler_1.addTeamSub)(Team[0], interaction.guildId);
+                    yield (yield (0, DBHandler_1.getGuild)()).findOneAndUpdate({ _id: interaction.guildId }, { $push: { teamSubs: { code: Team[0] } } });
                     const channel = yield interaction.client.channels.fetch(serverInfo.out);
-                    let games = yield (0, DBHandler_2.find)();
+                    let games = yield (yield (0, DBHandler_1.getGames)()).find();
                     for (let i in games) {
                         if (games[i].Team1 == Team[0] || games[i].Team2 == Team[0]) {
                             //@ts-ignore

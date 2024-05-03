@@ -23,7 +23,7 @@ module.exports = {
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
             const channel = interaction.options.getChannel("channelname");
-            yield (0, DBHandler_1.updateOutput)(channel.id, interaction.guildId);
+            yield (yield (0, DBHandler_1.getGuild)()).findOneAndUpdate({ _id: channel.id }, { out: interaction.guildId });
             yield interaction.reply("Outputchannel has been sucessfully set!");
             return;
         });

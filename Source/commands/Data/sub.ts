@@ -1,8 +1,7 @@
 import {SlashCommandBuilder, Interaction} from "discord.js";
-import {addTeamSub, getServerInfo} from "../../DB/DBHandler";
+import {getGames, getGuild, getServerInfo} from "../../DB/DBHandler";
 import {serverInfo} from "../../util/Types";
 import {sendUpcomingGame} from "../../util/sendMessage";
-import {find} from "../../DB/DBHandler"
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -50,10 +49,9 @@ module.exports = {
                 return;
 
             } else {
-                await addTeamSub(Team[0], interaction.guildId);
-
+                await (await getGuild()).findOneAndUpdate({_id:interaction.guildId}, {$push: {teamSubs: {code: Team[0]}}});
                 const channel = await interaction.client.channels.fetch(serverInfo.out)
-                let games = await find();
+                let games = await (await getGames()).find();
                 for (let i in games) {
 
                     if (games[i].Team1 == Team[0] || games[i].Team2 == Team[0]) {

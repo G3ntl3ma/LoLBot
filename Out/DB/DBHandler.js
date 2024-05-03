@@ -35,7 +35,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteGame = exports.getAllGuilds = exports.find = exports.findGame = exports.getServerInfo = exports.deleteTeamSub = exports.addTeamSub = exports.updateOutput = exports.deleteGuild = exports.addGuild = exports.connect = void 0;
+exports.deleteGame = exports.getServerInfo = exports.getGames = exports.getGuild = exports.connect = void 0;
 const serverConfig_js_1 = __importStar(require("./serverConfig.js"));
 let mongoose = require('mongoose');
 const config_1 = require("../config");
@@ -61,59 +61,18 @@ exports.connect = connect;
  * Add a Guild to the Database
  * @param id the ID of the Guild
  */
-function addGuild(id, out) {
+function getGuild() {
     return __awaiter(this, void 0, void 0, function* () {
-        const config = new serverConfig_js_1.default({
-            _id: id,
-            out: out
-        });
-        return yield config.save();
+        return yield serverConfig_js_1.default;
     });
 }
-exports.addGuild = addGuild;
-/**
- * Delete a Guild from the Database
- * @param id The ID of the Guild that should be deleted
- */
-function deleteGuild(id) {
+exports.getGuild = getGuild;
+function getGames() {
     return __awaiter(this, void 0, void 0, function* () {
-        return serverConfig_js_1.default.deleteOne({ _id: id });
+        return yield serverConfig_js_1.gameConfig;
     });
 }
-exports.deleteGuild = deleteGuild;
-/**Update the Output of the Guild Channel
- *
- * @param channelId
- * @param GuildId
- */
-function updateOutput(channelId, GuildId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield serverConfig_js_1.default.findOneAndUpdate({ _id: GuildId }, { out: channelId });
-    });
-}
-exports.updateOutput = updateOutput;
-/**add a subscription to a Guild
- *
- * @param TeamId
- * @param GuildId
- */
-function addTeamSub(TeamId, GuildId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield serverConfig_js_1.default.findOneAndUpdate({ _id: GuildId }, { $push: { teamSubs: { code: TeamId } } });
-    });
-}
-exports.addTeamSub = addTeamSub;
-/**
- *
- * @param TeamId
- * @param GuildId
- */
-function deleteTeamSub(TeamId, GuildId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield serverConfig_js_1.default.findOneAndUpdate({ _id: GuildId }, { $pull: { 'teamSubs': { code: TeamId } } });
-    });
-}
-exports.deleteTeamSub = deleteTeamSub;
+exports.getGames = getGames;
 /**
  * Get the Information about a certain Guild
  * @param GuildId The Guild Id
@@ -138,24 +97,6 @@ function getServerInfo(GuildId) {
     });
 }
 exports.getServerInfo = getServerInfo;
-function findGame() {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield serverConfig_js_1.gameConfig;
-    });
-}
-exports.findGame = findGame;
-function find() {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield serverConfig_js_1.gameConfig.find();
-    });
-}
-exports.find = find;
-function getAllGuilds() {
-    return __awaiter(this, void 0, void 0, function* () {
-        return yield serverConfig_js_1.default.find();
-    });
-}
-exports.getAllGuilds = getAllGuilds;
 function deleteGame(id) {
     return __awaiter(this, void 0, void 0, function* () {
         return yield serverConfig_js_1.gameConfig.deleteOne({ _id: id });

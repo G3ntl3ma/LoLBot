@@ -25,7 +25,7 @@ const userConfigSchema = new Schema({
     playerSubs : [{
         type:String,
         required:true
-    }],
+    }], //Array of subscribed Players
     timeZone: {type:String, required:true}
 })
 /**

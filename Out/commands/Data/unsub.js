@@ -51,7 +51,7 @@ module.exports = {
                 }
                 if (isSubbed) {
                     console.log(Team[0]);
-                    console.log(yield (0, DBHandler_1.deleteTeamSub)(Team[0], interaction.guildId));
+                    yield (yield (0, DBHandler_1.getGuild)()).findOneAndUpdate({ _id: interaction.guildId }, { $pull: { 'teamSubs': Team[0] } });
                     yield interaction.reply(`You unsubscribed from ${Team[0]}!`);
                     return;
                 }

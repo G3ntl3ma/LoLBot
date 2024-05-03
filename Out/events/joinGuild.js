@@ -17,7 +17,13 @@ module.exports = {
         return __awaiter(this, void 0, void 0, function* () {
             //Set a default output channel for the Games
             // @ts-ignore
-            const result = yield (0, DBHandler_1.addGuild)(guild.id, guild.systemChannelId);
+            const guildConfig = yield (0, DBHandler_1.getGuild)();
+            const config = new guildConfig({
+                _id: guild.id,
+                out: guild.systemChannelId,
+                timezone: "UTC"
+            });
+            yield config.save();
             console.log("New Server has been successfully added!");
         });
     },

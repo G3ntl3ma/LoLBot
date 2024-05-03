@@ -29,49 +29,18 @@ export class connect{
  * Add a Guild to the Database
  * @param id the ID of the Guild
  */
-export async function addGuild(id:string, out: string){
-const config = new serverConfig({
 
-    _id: id,
-    out: out
-})
-    return await config.save();
+export async function getGuild(){
+    return await serverConfig;
 }
 
-/**
- * Delete a Guild from the Database
- * @param id The ID of the Guild that should be deleted
- */
-export async function deleteGuild(id:string){
-    return serverConfig.deleteOne({_id: id});
+
+export async function getGames(){
+    return await gameConfig
 }
 
-/**Update the Output of the Guild Channel
- *
- * @param channelId
- * @param GuildId
- */
-export async function updateOutput(channelId: string, GuildId:string){
-   return await serverConfig.findOneAndUpdate({_id: GuildId}, {out: channelId});
-}
 
-/**add a subscription to a Guild
- *
- * @param TeamId
- * @param GuildId
- */
-export async function addTeamSub(TeamId: string, GuildId:string){
-    return await serverConfig.findOneAndUpdate({_id :GuildId}, {$push: {teamSubs: {code: TeamId}}})
-}
 
-/**
- *
- * @param TeamId
- * @param GuildId
- */
-export async function deleteTeamSub(TeamId: string, GuildId:string){
-    return await serverConfig.findOneAndUpdate({_id :GuildId}, {$pull: {'teamSubs': {code: TeamId}}})
-}
 /**
  * Get the Information about a certain Guild
  * @param GuildId The Guild Id
@@ -95,16 +64,6 @@ export async function getServerInfo(GuildId: string){
     return info;
 }
 
-export async function findGame(){
-    return await gameConfig
-}
-
-export async function find(){
-    return await gameConfig.find();
-}
-export async function getAllGuilds(){
-    return await serverConfig.find();
-}
 export async function deleteGame(id: string){
     return await gameConfig.deleteOne({_id: id})
 }

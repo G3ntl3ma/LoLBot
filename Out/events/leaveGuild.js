@@ -16,7 +16,7 @@ module.exports = {
     name: discord_js_1.Events.GuildDelete,
     execute(guild) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield (0, DBHandler_1.deleteGuild)(guild.id);
+            yield (yield (0, DBHandler_1.getGuild)()).deleteOne({ _id: guild.id });
             console.log("Server has been sucessfully deleted!");
         });
     },
