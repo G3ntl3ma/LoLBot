@@ -40,7 +40,7 @@ module.exports = {
             const serverInfo: serverInfo = await getServerInfo(interaction.guildId);
             let alreadySubbed: boolean = false;
             for (let i in serverInfo.teamSubs) {
-                if (serverInfo.teamSubs[i].code == Team[0]) alreadySubbed = true;
+                if (serverInfo.teamSubs[i] == Team[0]) alreadySubbed = true;
             }
             console.log(alreadySubbed)
             if (alreadySubbed) {
@@ -49,7 +49,7 @@ module.exports = {
                 return;
 
             } else {
-                await (await getGuild()).findOneAndUpdate({_id:interaction.guildId}, {$push: {teamSubs: {code: Team[0]}}});
+                await (await getGuild()).findOneAndUpdate({_id:interaction.guildId}, {$push: {teamSubs: Team[0]}});
                 const channel = await interaction.client.channels.fetch(serverInfo.out)
                 let games = await (await getGames()).find();
                 for (let i in games) {

@@ -9,7 +9,7 @@ module.exports = {
         let guild = await getServerInfo(interaction.guildId)
         let output :string = 'This are the Teams you are currently subscribed to:\n'
         for(let i in guild.teamSubs){
-            output = output + `${guild.teamSubs[i].code}\n`
+            output = output + `${guild.teamSubs[i]}\n`
         }
         await interaction.reply(output)
         return;

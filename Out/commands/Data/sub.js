@@ -47,7 +47,7 @@ module.exports = {
                 const serverInfo = yield (0, DBHandler_1.getServerInfo)(interaction.guildId);
                 let alreadySubbed = false;
                 for (let i in serverInfo.teamSubs) {
-                    if (serverInfo.teamSubs[i].code == Team[0])
+                    if (serverInfo.teamSubs[i] == Team[0])
                         alreadySubbed = true;
                 }
                 console.log(alreadySubbed);
@@ -57,7 +57,7 @@ module.exports = {
                     return;
                 }
                 else {
-                    yield (yield (0, DBHandler_1.getGuild)()).findOneAndUpdate({ _id: interaction.guildId }, { $push: { teamSubs: { code: Team[0] } } });
+                    yield (yield (0, DBHandler_1.getGuild)()).findOneAndUpdate({ _id: interaction.guildId }, { $push: { teamSubs: Team[0] } });
                     const channel = yield interaction.client.channels.fetch(serverInfo.out);
                     let games = yield (yield (0, DBHandler_1.getGames)()).find();
                     for (let i in games) {

@@ -20,7 +20,7 @@ module.exports = {
             let guild = yield (0, DBHandler_1.getServerInfo)(interaction.guildId);
             let output = 'This are the Teams you are currently subscribed to:\n';
             for (let i in guild.teamSubs) {
-                output = output + `${guild.teamSubs[i].code}\n`;
+                output = output + `${guild.teamSubs[i]}\n`;
             }
             yield interaction.reply(output);
             return;

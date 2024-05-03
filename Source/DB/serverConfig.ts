@@ -26,7 +26,7 @@ const userConfigSchema = new Schema({
         type:String,
         required:true
     }], //Array of subscribed Players
-    timeZone: {type:String, required:true}
+    timezone: {type:String, required:true}
 })
 /**
  * Config for Storing Game Information

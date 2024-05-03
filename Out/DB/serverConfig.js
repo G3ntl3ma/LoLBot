@@ -31,7 +31,7 @@ const userConfigSchema = new Schema({
             type: String,
             required: true
         }],
-    timeZone: { type: String, required: true }
+    timezone: { type: String, required: true }
 });
 /**
  * Config for Storing Game Information
