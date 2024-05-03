@@ -19,17 +19,19 @@ const userConfigSchema = new Schema({
         required: true
     },
     teamSubs: [{
-            code: {
-                type: String,
-                required: true
-            }
-        }],
+            type: String,
+            required: true
+        }
+    ],
     leagueSubs: [{
-            code: {
-                type: String,
-                required: true
-            }
-        }], //Array of all Leagues the Person is subscribed to
+            type: String,
+            required: true
+        }],
+    playerSubs: [{
+            type: String,
+            required: true
+        }],
+    timeZone: { type: String, required: true }
 });
 /**
  * Config for Storing Game Information

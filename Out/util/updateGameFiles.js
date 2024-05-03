@@ -122,8 +122,8 @@ function updateFinishedGames(client) {
         for (let game in filter) {
             for (let guild in Guilds) {
                 for (let team in Guilds[guild]["teamSubs"]) {
-                    if (filter[game].title.Team1 === Guilds[guild]["teamSubs"][team].code ||
-                        filter[game].title.Team2 === Guilds[guild]["teamSubs"][team].code) {
+                    if (filter[game].title.Team1 === Guilds[guild]["teamSubs"][team] ||
+                        filter[game].title.Team2 === Guilds[guild]["teamSubs"][team]) {
                         console.log("Match Found");
                         //@ts-ignore
                         let channel = yield client.channels.fetch(Guilds[guild].out);

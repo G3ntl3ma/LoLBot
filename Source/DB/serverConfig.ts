@@ -14,17 +14,19 @@ const userConfigSchema = new Schema({
         required: true
     }, //Output Channel
     teamSubs: [{
-        code: {
-            type:String,
-            required: true
-        }
-    }],//Array of all teams that the Server is subscribed to
+        type: String,
+        required: true
+    }
+    ],//Array of all teams that the Server is subscribed to
     leagueSubs : [{
-        code: {
             type:String,
             required:true
-        }
-    }], //Array of all Leagues the Person is subscribed to
+        }], //Array of all Leagues the Person is subscribed to
+    playerSubs : [{
+        type:String,
+        required:true
+    }],
+    timeZone: {type:String, required:true}
 })
 /**
  * Config for Storing Game Information
