@@ -20,7 +20,6 @@ const config_1 = require("./config");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const worker_threads_1 = require("worker_threads");
-const updateGameFiles_1 = require("./util/updateGameFiles");
 const DBHandler_1 = require("./DB/DBHandler");
 const client = new discord_js_1.Client({
     intents: [
@@ -34,7 +33,8 @@ let finishedGamesInterval = "";
 DBHandler_1.connect.connect().then(res => {
     const newGamesWorker = new worker_threads_1.Worker(__dirname + "/newGames.js");
     newGamesWorker.postMessage("Start");
-    (0, updateGameFiles_1.updateFinishedGames)(client).then(res => finishedGamesInterval = setInterval(updateGameFiles_1.updateFinishedGames, 3600000, client));
+    const finishedGamesWorker = new worker_threads_1.Worker(__dirname + "/finishedGames.js");
+    finishedGamesWorker.postMessage("Start");
 });
 client.login(config_1.DISCORD_TOKEN);
 //@ts-ignore

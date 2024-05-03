@@ -6,7 +6,7 @@ import {DISCORD_TOKEN, DISCORD_CLIENT_ID} from "./config";
 import fs from "fs";
 import path from "path";
 import {Worker} from "worker_threads"
-import {findNewGames, updateFinishedGames} from "./util/updateGameFiles";
+import {updateFinishedGames} from "./util/updateGameFiles";
 import {connect} from "./DB/DBHandler";
 
 
@@ -22,8 +22,8 @@ let finishedGamesInterval:any = "";
 connect.connect().then(res => {
     const newGamesWorker = new Worker(__dirname + "/newGames.js");
     newGamesWorker.postMessage("Start")
-    updateFinishedGames(client).then(res => finishedGamesInterval = setInterval(updateFinishedGames, 3_600_000, client))
-
+    const finishedGamesWorker = new Worker(__dirname + "/finishedGames.js")
+    finishedGamesWorker.postMessage("Start")
 })
 
 client.login(DISCORD_TOKEN)
