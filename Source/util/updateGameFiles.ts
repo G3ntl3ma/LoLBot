@@ -28,7 +28,7 @@ type returnQuery = {
     cargoquery: [returnItems]
 }
 
-export async function findNewGames() {
+export async function findNewGames(client:Client) {
     for (let i = 0; i <= 30; i++) {
 
         let date = new Date()
@@ -70,12 +70,27 @@ export async function findNewGames() {
                 })
             }
         }
+
+        const Guilds = await (await getGuild()).find()
         for (let i in games) {
             const foundGame: any = await (await getGames()).find(games[i])
             if (foundGame.length == 0 && foundGame.Team1 != "TBD" && foundGame.Team2 != "TBD") {
 
                 let newGame = new gameConfig(games[i]);
                 await newGame.save()
+
+
+                for(let guild in Guilds) {
+                    for (let team in Guilds[guild]["teamSubs"]) {
+                        if (games[i].Team1 === Guilds[guild]["teamSubs"][team] ||
+                            games[i].Team2 === Guilds[guild]["teamSubs"][team]) {
+                            console.log("Match Found")
+                            //@ts-ignore
+                            let channel: any = await client.channels.fetch(Guilds[guild].out)
+                            await channel.send({embeds: [await sendUpcomingGame(games[i], Guilds[guild]["teamSubs"][team])]})
+                        }
+                    }
+                }
             }
         }
     }

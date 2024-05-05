@@ -13,7 +13,7 @@ exports.updateFinishedGames = exports.findNewGames = void 0;
 const serverConfig_1 = require("../DB/serverConfig");
 const DBHandler_1 = require("../DB/DBHandler");
 const sendMessage_1 = require("./sendMessage");
-function findNewGames() {
+function findNewGames(client) {
     return __awaiter(this, void 0, void 0, function* () {
         for (let i = 0; i <= 30; i++) {
             let date = new Date();
@@ -49,11 +49,23 @@ function findNewGames() {
                     });
                 }
             }
+            const Guilds = yield (yield (0, DBHandler_1.getGuild)()).find();
             for (let i in games) {
                 const foundGame = yield (yield (0, DBHandler_1.getGames)()).find(games[i]);
                 if (foundGame.length == 0 && foundGame.Team1 != "TBD" && foundGame.Team2 != "TBD") {
                     let newGame = new serverConfig_1.gameConfig(games[i]);
                     yield newGame.save();
+                    for (let guild in Guilds) {
+                        for (let team in Guilds[guild]["teamSubs"]) {
+                            if (games[i].Team1 === Guilds[guild]["teamSubs"][team] ||
+                                games[i].Team2 === Guilds[guild]["teamSubs"][team]) {
+                                console.log("Match Found");
+                                //@ts-ignore
+                                let channel = yield client.channels.fetch(Guilds[guild].out);
+                                yield channel.send({ embeds: [yield (0, sendMessage_1.sendUpcomingGame)(games[i], Guilds[guild]["teamSubs"][team])] });
+                            }
+                        }
+                    }
                 }
             }
         }
