@@ -79,13 +79,18 @@ export async function findNewGames(client:Client) {
                 let newGame = new gameConfig(games[i]);
                 await newGame.save()
 
-
                 for(let guild in Guilds) {
+
+                    //Check so one Game doesnt get sent twice per Server
+                    let sent: boolean = false;
+
                     for (let team in Guilds[guild]["teamSubs"]) {
+
                         if (games[i].Team1 === Guilds[guild]["teamSubs"][team] ||
-                            games[i].Team2 === Guilds[guild]["teamSubs"][team]) {
+                            games[i].Team2 === Guilds[guild]["teamSubs"][team] && !sent) {
                             console.log("Match Found")
                             //@ts-ignore
+                            sent = true
                             let channel: any = await client.channels.fetch(Guilds[guild].out)
                             await channel.send({embeds: [await sendUpcomingGame(games[i], Guilds[guild]["teamSubs"][team])]})
                         }
@@ -161,10 +166,12 @@ export async function updateFinishedGames(client: Client) {
     const Guilds = await (await getGuild()).find()
     for (let game in filter) {
         for(let guild in Guilds){
+            let sent: boolean = false;
             for(let team in Guilds[guild]["teamSubs"]){
                 if(filter[game].title.Team1 === Guilds[guild]["teamSubs"][team] ||
-                    filter[game].title.Team2 === Guilds[guild]["teamSubs"][team]){
+                    filter[game].title.Team2 === Guilds[guild]["teamSubs"][team] && !sent){
                     console.log("Match Found")
+                    sent = true;
                     //@ts-ignore
                     let channel:any = await client.channels.fetch(Guilds[guild].out)
                     await channel.send({embeds: [await sendFinishedGame(filter[game].title)]})

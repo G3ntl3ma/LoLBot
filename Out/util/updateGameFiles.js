@@ -56,11 +56,14 @@ function findNewGames(client) {
                     let newGame = new serverConfig_1.gameConfig(games[i]);
                     yield newGame.save();
                     for (let guild in Guilds) {
+                        //Check so one Game doesnt get sent twice per Server
+                        let sent = false;
                         for (let team in Guilds[guild]["teamSubs"]) {
                             if (games[i].Team1 === Guilds[guild]["teamSubs"][team] ||
-                                games[i].Team2 === Guilds[guild]["teamSubs"][team]) {
+                                games[i].Team2 === Guilds[guild]["teamSubs"][team] && !sent) {
                                 console.log("Match Found");
                                 //@ts-ignore
+                                sent = true;
                                 let channel = yield client.channels.fetch(Guilds[guild].out);
                                 yield channel.send({ embeds: [yield (0, sendMessage_1.sendUpcomingGame)(games[i], Guilds[guild]["teamSubs"][team])] });
                             }
@@ -133,10 +136,12 @@ function updateFinishedGames(client) {
         const Guilds = yield (yield (0, DBHandler_1.getGuild)()).find();
         for (let game in filter) {
             for (let guild in Guilds) {
+                let sent = false;
                 for (let team in Guilds[guild]["teamSubs"]) {
                     if (filter[game].title.Team1 === Guilds[guild]["teamSubs"][team] ||
-                        filter[game].title.Team2 === Guilds[guild]["teamSubs"][team]) {
+                        filter[game].title.Team2 === Guilds[guild]["teamSubs"][team] && !sent) {
                         console.log("Match Found");
+                        sent = true;
                         //@ts-ignore
                         let channel = yield client.channels.fetch(Guilds[guild].out);
                         yield channel.send({ embeds: [yield (0, sendMessage_1.sendFinishedGame)(filter[game].title)] });

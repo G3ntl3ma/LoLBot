@@ -35,15 +35,26 @@ export async function sendFinishedGame(game: any){
     else{
         Winner = game.Team2
     }
+    const vsString: string = `${game.Team1} vs ${game.Team2}`;
+
+    let logoURL : string = "https://imgur.com/deu1U5t.jpeg";
+    const info = await fetch(
+        `https://lol.fandom.com/api.php?action=query&format=json&prop=imageinfo&titles=File:${Winner}logo%20square.png&iiprop=url`);
+    const data = await info.json();
+    for (let i in data["query"]["pages"]) {
+        logoURL = data["query"]["pages"][i]["imageinfo"][0]["url"]
+    }
+
+
     const Embed = new EmbedBuilder()
         .setColor(0x0099FF)
-        .setDescription("A Game has finished")
+        .setDescription(vsString)
         .setTitle('Finished Game')
         .setThumbnail('https://imgur.com/deu1U5t.jpeg')
         .addFields(
-            { name: "Teams", value: `${game.Team1} vs ${game.Team2}` },
             {name : "Time:", value:`${game["DateTime UTC"]} UTC`},
             {name : "Winner", value: Winner}
         )
+        .setImage(logoURL)
     return Embed
 }

@@ -42,12 +42,20 @@ function sendFinishedGame(game) {
         else {
             Winner = game.Team2;
         }
+        const vsString = `${game.Team1} vs ${game.Team2}`;
+        let logoURL = "https://imgur.com/deu1U5t.jpeg";
+        const info = yield fetch(`https://lol.fandom.com/api.php?action=query&format=json&prop=imageinfo&titles=File:${Winner}logo%20square.png&iiprop=url`);
+        const data = yield info.json();
+        for (let i in data["query"]["pages"]) {
+            logoURL = data["query"]["pages"][i]["imageinfo"][0]["url"];
+        }
         const Embed = new discord_js_1.EmbedBuilder()
             .setColor(0x0099FF)
-            .setDescription("A Game has finished")
+            .setDescription(vsString)
             .setTitle('Finished Game')
             .setThumbnail('https://imgur.com/deu1U5t.jpeg')
-            .addFields({ name: "Teams", value: `${game.Team1} vs ${game.Team2}` }, { name: "Time:", value: `${game["DateTime UTC"]} UTC` }, { name: "Winner", value: Winner });
+            .addFields({ name: "Time:", value: `${game["DateTime UTC"]} UTC` }, { name: "Winner", value: Winner })
+            .setImage(logoURL);
         return Embed;
     });
 }
