@@ -86,9 +86,10 @@ export async function findNewGames(client:Client) {
 
                     for (let team in Guilds[guild]["teamSubs"]) {
 
-                        if (games[i].Team1 === Guilds[guild]["teamSubs"][team] ||
-                            games[i].Team2 === Guilds[guild]["teamSubs"][team] && !sent) {
+                        if ((games[i].Team1 === Guilds[guild]["teamSubs"][team] ||
+                            games[i].Team2 === Guilds[guild]["teamSubs"][team]) && !sent) {
                             console.log("Match Found")
+                            console.log(sent)
                             //@ts-ignore
                             sent = true
                             let channel: any = await client.channels.fetch(Guilds[guild].out)
@@ -168,8 +169,8 @@ export async function updateFinishedGames(client: Client) {
         for(let guild in Guilds){
             let sent: boolean = false;
             for(let team in Guilds[guild]["teamSubs"]){
-                if(filter[game].title.Team1 === Guilds[guild]["teamSubs"][team] ||
-                    filter[game].title.Team2 === Guilds[guild]["teamSubs"][team] && !sent){
+                if((filter[game].title.Team1 === Guilds[guild]["teamSubs"][team] ||
+                    filter[game].title.Team2 === Guilds[guild]["teamSubs"][team]) && !sent){
                     console.log("Match Found")
                     sent = true;
                     //@ts-ignore

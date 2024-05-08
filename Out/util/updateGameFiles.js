@@ -59,9 +59,10 @@ function findNewGames(client) {
                         //Check so one Game doesnt get sent twice per Server
                         let sent = false;
                         for (let team in Guilds[guild]["teamSubs"]) {
-                            if (games[i].Team1 === Guilds[guild]["teamSubs"][team] ||
-                                games[i].Team2 === Guilds[guild]["teamSubs"][team] && !sent) {
+                            if ((games[i].Team1 === Guilds[guild]["teamSubs"][team] ||
+                                games[i].Team2 === Guilds[guild]["teamSubs"][team]) && !sent) {
                                 console.log("Match Found");
+                                console.log(sent);
                                 //@ts-ignore
                                 sent = true;
                                 let channel = yield client.channels.fetch(Guilds[guild].out);
@@ -138,8 +139,8 @@ function updateFinishedGames(client) {
             for (let guild in Guilds) {
                 let sent = false;
                 for (let team in Guilds[guild]["teamSubs"]) {
-                    if (filter[game].title.Team1 === Guilds[guild]["teamSubs"][team] ||
-                        filter[game].title.Team2 === Guilds[guild]["teamSubs"][team] && !sent) {
+                    if ((filter[game].title.Team1 === Guilds[guild]["teamSubs"][team] ||
+                        filter[game].title.Team2 === Guilds[guild]["teamSubs"][team]) && !sent) {
                         console.log("Match Found");
                         sent = true;
                         //@ts-ignore
