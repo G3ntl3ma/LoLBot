@@ -3,6 +3,7 @@ import {gameConfig} from "../DB/serverConfig";
 import {getGames, getGuild} from "../DB/DBHandler";
 import {Client} from "discord.js"
 import {sendFinishedGame, sendUpcomingGame} from "./sendMessage";
+import {localDateString} from "./util";
 
 /**
  * This File looks for new Games and adds them to the DB.
@@ -88,12 +89,18 @@ export async function findNewGames(client:Client) {
 
                         if ((games[i].Team1 === Guilds[guild]["teamSubs"][team] ||
                             games[i].Team2 === Guilds[guild]["teamSubs"][team]) && !sent) {
-                            console.log("Match Found")
-                            console.log(sent)
+
+
+                            const dateString: string = games[i]["DateTime UTC"]
                             //@ts-ignore
                             sent = true
                             let channel: any = await client.channels.fetch(Guilds[guild].out)
-                            await channel.send({embeds: [await sendUpcomingGame(games[i], Guilds[guild]["teamSubs"][team])]})
+
+                            await channel.send(
+                                {embeds: [await sendUpcomingGame(
+                                    games[i], Guilds[guild]["teamSubs"][team], localDateString(dateString, Guilds[guild]["timezone"] )
+                                        )]}
+                            )
                         }
                     }
                 }
@@ -172,10 +179,11 @@ export async function updateFinishedGames(client: Client) {
                 if((filter[game].title.Team1 === Guilds[guild]["teamSubs"][team] ||
                     filter[game].title.Team2 === Guilds[guild]["teamSubs"][team]) && !sent){
                     console.log("Match Found")
-                    sent = true;
-                    //@ts-ignore
+                    sent= true;
+
                     let channel:any = await client.channels.fetch(Guilds[guild].out)
-                    await channel.send({embeds: [await sendFinishedGame(filter[game].title)]})
+                    const dateString: string = filter[game]["title"]["DateTime UTC"]
+                    await channel.send({embeds: [await sendFinishedGame(filter[game].title, localDateString(dateString, Guilds[guild]["timezone"]))]})
                 }
             }
         }

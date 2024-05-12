@@ -45,7 +45,6 @@ module.exports = {
             else {
                 let isSubbed = false;
                 for (let i in serverInfo.teamSubs) {
-                    console.log("Stored Data: ", serverInfo.teamSubs[i]);
                     if (serverInfo.teamSubs[i] === Team[0])
                         isSubbed = true;
                 }

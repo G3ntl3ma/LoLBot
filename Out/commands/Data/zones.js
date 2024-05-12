@@ -10,21 +10,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
-const DBHandler_1 = require("../DB/DBHandler");
+const Types_1 = require("../../util/Types");
 module.exports = {
-    name: discord_js_1.Events.GuildCreate,
-    execute(guild) {
+    data: new discord_js_1.SlashCommandBuilder()
+        .setName("zones")
+        .setDescription("Get an Overview of all Possible Timezones"),
+    execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
-            //Set a default output channel for the Games
-            // @ts-ignore
-            const guildConfig = yield (0, DBHandler_1.getGuild)();
-            const config = new guildConfig({
-                _id: guild.id,
-                out: guild.systemChannelId,
-                timezone: "en-US"
-            });
-            yield config.save();
-            console.log("New Server has been successfully added!");
+            let replyString = "Here are all Locale Options: \n";
+            for (let i in Types_1.LocaleOptions) {
+                // @ts-ignore
+                replyString = replyString + `${i}  ${Types_1.LocaleOptions[i]}\n`;
+            }
+            yield interaction.reply(replyString);
+            return;
         });
     },
 };

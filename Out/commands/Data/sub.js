@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
 const DBHandler_1 = require("../../DB/DBHandler");
 const sendMessage_1 = require("../../util/sendMessage");
+const util_1 = require("../../util/util");
 module.exports = {
     data: new discord_js_1.SlashCommandBuilder()
         .setName("sub")
@@ -57,13 +58,14 @@ module.exports = {
                     return;
                 }
                 else {
-                    yield (yield (0, DBHandler_1.getGuild)()).findOneAndUpdate({ _id: interaction.guildId }, { $push: { teamSubs: Team[0] } });
+                    let guild = yield (0, DBHandler_1.getGuild)();
+                    yield guild.findOneAndUpdate({ _id: interaction.guildId }, { $push: { teamSubs: Team[0] } });
                     const channel = yield interaction.client.channels.fetch(serverInfo.out);
                     let games = yield (yield (0, DBHandler_1.getGames)()).find();
                     for (let i in games) {
                         if (games[i].Team1 == Team[0] || games[i].Team2 == Team[0]) {
                             //@ts-ignore
-                            const sendEmbed = yield (0, sendMessage_1.sendUpcomingGame)(games[i], Team[0]);
+                            const sendEmbed = yield (0, sendMessage_1.sendUpcomingGame)(games[i], Team[0], (0, util_1.localDateString)(games[i]["DateTime UTC"], (yield guild.find({ _id: interaction.guildId })).timezone));
                             yield channel.send({ embeds: [sendEmbed] });
                         }
                     }

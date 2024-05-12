@@ -11,8 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendFinishedGame = exports.sendUpcomingGame = void 0;
 const discord_js_1 = require("discord.js");
-function sendUpcomingGame(game, team) {
+function sendUpcomingGame(game, team, time) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log(time);
         let logoURL = "https://imgur.com/deu1U5t.jpeg";
         const info = yield fetch(`https://lol.fandom.com/api.php?action=query&format=json&prop=imageinfo&titles=File:${team}logo%20square.png&iiprop=url`);
         const data = yield info.json();
@@ -25,12 +26,12 @@ function sendUpcomingGame(game, team) {
             .setTitle('Upcoming Game:')
             .setThumbnail('https://imgur.com/deu1U5t.jpeg')
             .setImage(logoURL)
-            .addFields({ name: "Teams", value: `${game.Team1} vs ${game.Team2}` }, { name: "Time:", value: `${game["DateTime UTC"]} UTC` });
+            .addFields({ name: "Teams", value: `${game.Team1} vs ${game.Team2}` }, { name: "Time:", value: time });
         return Embed;
     });
 }
 exports.sendUpcomingGame = sendUpcomingGame;
-function sendFinishedGame(game) {
+function sendFinishedGame(game, time) {
     return __awaiter(this, void 0, void 0, function* () {
         let Winner = "";
         if (game.WinTeam = undefined) {
@@ -54,7 +55,7 @@ function sendFinishedGame(game) {
             .setDescription(vsString)
             .setTitle('Finished Game')
             .setThumbnail('https://imgur.com/deu1U5t.jpeg')
-            .addFields({ name: "Time:", value: `${game["DateTime UTC"]} UTC` }, { name: "Winner", value: Winner })
+            .addFields({ name: "Time:", value: time }, { name: "Winner", value: Winner })
             .setImage(logoURL);
         return Embed;
     });

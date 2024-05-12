@@ -2,6 +2,7 @@ import {SlashCommandBuilder, Interaction} from "discord.js";
 import {getGames, getGuild, getServerInfo} from "../../DB/DBHandler";
 import {serverInfo} from "../../util/Types";
 import {sendUpcomingGame} from "../../util/sendMessage";
+import {localDateString} from "../../util/util";
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -49,14 +50,15 @@ module.exports = {
                 return;
 
             } else {
-                await (await getGuild()).findOneAndUpdate({_id:interaction.guildId}, {$push: {teamSubs: Team[0]}});
+                let guild = await getGuild()
+                await guild.findOneAndUpdate({_id:interaction.guildId}, {$push: {teamSubs: Team[0]}});
                 const channel = await interaction.client.channels.fetch(serverInfo.out)
                 let games = await (await getGames()).find();
                 for (let i in games) {
 
                     if (games[i].Team1 == Team[0] || games[i].Team2 == Team[0]) {
                         //@ts-ignore
-                        const sendEmbed = await sendUpcomingGame(games[i], Team[0])
+                        const sendEmbed = await sendUpcomingGame(games[i], Team[0], localDateString(games[i]["DateTime UTC"], (await guild.find({_id:interaction.guildId})).timezone))
                         await channel.send(
                             {embeds: [sendEmbed]})
                     }

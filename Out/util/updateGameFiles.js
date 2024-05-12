@@ -13,6 +13,7 @@ exports.updateFinishedGames = exports.findNewGames = void 0;
 const serverConfig_1 = require("../DB/serverConfig");
 const DBHandler_1 = require("../DB/DBHandler");
 const sendMessage_1 = require("./sendMessage");
+const util_1 = require("./util");
 function findNewGames(client) {
     return __awaiter(this, void 0, void 0, function* () {
         for (let i = 0; i <= 30; i++) {
@@ -61,12 +62,11 @@ function findNewGames(client) {
                         for (let team in Guilds[guild]["teamSubs"]) {
                             if ((games[i].Team1 === Guilds[guild]["teamSubs"][team] ||
                                 games[i].Team2 === Guilds[guild]["teamSubs"][team]) && !sent) {
-                                console.log("Match Found");
-                                console.log(sent);
+                                const dateString = games[i]["DateTime UTC"];
                                 //@ts-ignore
                                 sent = true;
                                 let channel = yield client.channels.fetch(Guilds[guild].out);
-                                yield channel.send({ embeds: [yield (0, sendMessage_1.sendUpcomingGame)(games[i], Guilds[guild]["teamSubs"][team])] });
+                                yield channel.send({ embeds: [yield (0, sendMessage_1.sendUpcomingGame)(games[i], Guilds[guild]["teamSubs"][team], (0, util_1.localDateString)(dateString, Guilds[guild]["timezone"]))] });
                             }
                         }
                     }
@@ -143,9 +143,9 @@ function updateFinishedGames(client) {
                         filter[game].title.Team2 === Guilds[guild]["teamSubs"][team]) && !sent) {
                         console.log("Match Found");
                         sent = true;
-                        //@ts-ignore
                         let channel = yield client.channels.fetch(Guilds[guild].out);
-                        yield channel.send({ embeds: [yield (0, sendMessage_1.sendFinishedGame)(filter[game].title)] });
+                        const dateString = filter[game]["title"]["DateTime UTC"];
+                        yield channel.send({ embeds: [yield (0, sendMessage_1.sendFinishedGame)(filter[game].title, (0, util_1.localDateString)(dateString, Guilds[guild]["timezone"]))] });
                     }
                 }
             }
