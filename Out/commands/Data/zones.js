@@ -10,18 +10,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
-const Types_1 = require("../../util/Types");
 module.exports = {
     data: new discord_js_1.SlashCommandBuilder()
         .setName("zones")
         .setDescription("Get an Overview of all Possible Timezones"),
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
-            let replyString = "Here are all Locale Options: \n";
-            for (let i in Types_1.LocaleOptions) {
-                // @ts-ignore
-                replyString = replyString + `${i}  ${Types_1.LocaleOptions[i]}\n`;
-            }
+            let replyString = "Here are some Time Zones: \n" +
+                "Europe/Berlin \n" +
+                "Europe/Paris \n" +
+                "America/New_York \n" +
+                "America/Los_Angeles \n" +
+                "Asia/Seoul \n" +
+                "If you can't find your Time zone use \n" +
+                "https://www.timezoneconverter.com/cgi-bin/findzone";
             yield interaction.reply(replyString);
             return;
         });

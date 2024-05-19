@@ -1,6 +1,9 @@
-let date = new Date(Date.UTC(2024, 5, 12, 15, 48, 0, 0))
-console.log(date.toString())
-console.log(date.toLocaleString("de-DE"))
+let timezones = require("timezones-list")
+let date = new Date()
+console.log(date.toLocaleString("en-US", {timeZone: "Etc/GMT+1", hour12: false}))
 
-let s = "09"
-console.log(Number(s))
+let zones = []
+for(let i of timezones.default){
+    zones.push(i.tzCode)
+}
+console.log(zones.indexOf("Etc/GMT+1"))

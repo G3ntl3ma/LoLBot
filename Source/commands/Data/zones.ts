@@ -1,5 +1,4 @@
 import {SlashCommandBuilder} from "discord.js";
-import {LocaleOptions} from "../../util/Types"
 
 module.exports = {
     data : new SlashCommandBuilder()
@@ -7,12 +6,14 @@ module.exports = {
         .setDescription("Get an Overview of all Possible Timezones"),
     async execute(interaction: any){
 
-        let replyString = "Here are all Locale Options: \n";
-
-        for(let i in LocaleOptions){
-            // @ts-ignore
-            replyString = replyString + `${i}  ${LocaleOptions[i]}\n`
-        }
+        let replyString = "Here are some Time Zones: \n" +
+            "Europe/Berlin \n" +
+            "Europe/Paris \n" +
+            "America/New_York \n" +
+            "America/Los_Angeles \n" +
+            "Asia/Seoul \n" +
+            "If you can't find your Time zone use \n" +
+            "https://www.timezoneconverter.com/cgi-bin/findzone";
 
         await interaction.reply(replyString);
         return

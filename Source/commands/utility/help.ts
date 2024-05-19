@@ -12,8 +12,10 @@ module.exports = {
             .addFields(
                 { name: "out", value: `Set the channel where all upcoming Games and finished Games get posted in` },
                 {name : "show", value:`Show all current Subscriptions`},
-                {name: "sub", value: "give the full Name of a Team (G2 Esports) or it's short name (G2) to subscribe to it "},
-                {name: "unsub", value: "give the full Name of a Team (Fnatic) or it's short name (FNC) to unsubscribe from it"}
+                {name: "sub", value: "Give the full Name of a Team (G2 Esports) or it's short name (G2) to subscribe to it "},
+                {name: "unsub", value: "Give the full Name of a Team (Fnatic) or it's short name (FNC) to unsubscribe from it"},
+                {name: "zones", value: "Get more info about how the Time Zones for LoLBot works"},
+                {name: "time", value: "Set the Time Zone for the Server"}
             )
         await interaction.reply({embeds: [Embed]})
         return

@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const discord_js_1 = require("discord.js");
-const Types_1 = require("../../util/Types");
+const util_1 = require("../../util/util");
 const DBHandler_1 = require("../../DB/DBHandler");
 module.exports = {
     data: new discord_js_1.SlashCommandBuilder()
@@ -23,12 +23,20 @@ module.exports = {
     execute(interaction) {
         return __awaiter(this, void 0, void 0, function* () {
             const zone = yield interaction.options.getString("zone");
-            if (Object.keys(Types_1.LocaleOptions).includes(zone)) {
+            const GMTZones = ["GMT+0", "GMT+1", "GMT+2", "GMT+3", "GMT+4", "GMT+5", "GMT+6", "GMT+7", "GMT+8", "GMT+9", "GMT+10", "GMT+11", "GMT+12",
+                "GMT-0", "GMT-1", "GMT-2", "GMT-3", "GMT-4", "GMT-5", "GMT-6", "GMT-7", "GMT-8", "GMT-9", "GMT-10", "GMT-11", "GMT-12", "GMT-13", "GMT-14"
+            ];
+            if (GMTZones.indexOf(zone) !== -1) {
+                yield (yield (0, DBHandler_1.getGuild)()).updateOne({ _id: interaction.guildId }, { timezone: `Etc/${zone}` });
+                yield interaction.reply("The Time Zone has been set!");
+                return;
+            }
+            if ((0, util_1.allTimeZones)().indexOf(zone) !== -1) {
                 yield (yield (0, DBHandler_1.getGuild)()).updateOne({ _id: interaction.guildId }, { timezone: zone });
-                yield interaction.reply("The Locale has been successfully set!");
+                yield interaction.reply("The Time Zone has been successfully set!");
             }
             else {
-                yield interaction.reply(`${zone} is not a valid Zone! Use /zones to get all Zones`);
+                yield interaction.reply(`${zone} is not a valid Time Zone! Use /zones to find out more`);
             }
             return;
         });

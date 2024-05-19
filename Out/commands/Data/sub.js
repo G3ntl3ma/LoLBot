@@ -64,8 +64,12 @@ module.exports = {
                     let games = yield (yield (0, DBHandler_1.getGames)()).find();
                     for (let i in games) {
                         if (games[i].Team1 == Team[0] || games[i].Team2 == Team[0]) {
+                            let guildInfo = (yield guild.findOne({ _id: interaction.guildId }));
+                            let timeZone = "";
+                            timeZone = guildInfo.timezone;
+                            console.log(timeZone);
                             //@ts-ignore
-                            const sendEmbed = yield (0, sendMessage_1.sendUpcomingGame)(games[i], Team[0], (0, util_1.localDateString)(games[i]["DateTime UTC"], (yield guild.find({ _id: interaction.guildId })).timezone));
+                            const sendEmbed = yield (0, sendMessage_1.sendUpcomingGame)(games[i], Team[0], (0, util_1.localDateString)(games[i]["DateTime UTC"], timeZone));
                             yield channel.send({ embeds: [sendEmbed] });
                         }
                     }

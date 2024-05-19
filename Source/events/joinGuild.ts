@@ -10,7 +10,7 @@ module.exports = {
         const config = new guildConfig({
             _id: guild.id,
             out: guild.systemChannelId,
-            timezone: "en-US"
+            timezone: ""
         })
         await config.save()
         console.log("New Server has been successfully added!")

@@ -1,8 +1,11 @@
+import timezones from "timezones-list"
+
 /**
  * Various Utility Classes that are used all over the place
  */
 
-export function localDateString(dateString: string, locale: string){
+export function localDateString(dateString: string, zone: string){
+    console.log(zone)
     const date: Date = new Date(Date.UTC(
         Number(dateString.substring(0, 4)),
         Number(dateString.substring(5, 7)),
@@ -12,5 +15,16 @@ export function localDateString(dateString: string, locale: string){
         0,
         0,
     ))
-    return date.toLocaleString(locale)
+    return date.toLocaleString("de-DE", {timeZone : zone})
+}
+
+/**
+ * Returns a List with all Timezones
+ */
+export function allTimeZones(){
+    let list : string[] = []
+    for(let i of timezones){
+        list.push(i.tzCode)
+    }
+    return list
 }

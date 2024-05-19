@@ -45,7 +45,6 @@ export async function sendFinishedGame(game: any, time:string){
         logoURL = data["query"]["pages"][i]["imageinfo"][0]["url"]
     }
 
-
     const Embed = new EmbedBuilder()
         .setColor(0x0099FF)
         .setDescription(vsString)

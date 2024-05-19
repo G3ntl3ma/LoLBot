@@ -57,8 +57,12 @@ module.exports = {
                 for (let i in games) {
 
                     if (games[i].Team1 == Team[0] || games[i].Team2 == Team[0]) {
+                        let guildInfo: any = (await guild.findOne({_id:interaction.guildId}));
+                        let timeZone: string = ""
+                        timeZone = guildInfo.timezone
+                        console.log(timeZone)
                         //@ts-ignore
-                        const sendEmbed = await sendUpcomingGame(games[i], Team[0], localDateString(games[i]["DateTime UTC"], (await guild.find({_id:interaction.guildId})).timezone))
+                        const sendEmbed = await sendUpcomingGame(games[i], Team[0], localDateString(games[i]["DateTime UTC"], timeZone))
                         await channel.send(
                             {embeds: [sendEmbed]})
                     }
