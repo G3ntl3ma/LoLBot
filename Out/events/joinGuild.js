@@ -21,7 +21,7 @@ module.exports = {
             const config = new guildConfig({
                 _id: guild.id,
                 out: guild.systemChannelId,
-                timezone: ""
+                timezone: "Etc/GMT+0"
             });
             yield config.save();
             console.log("New Server has been successfully added!");
