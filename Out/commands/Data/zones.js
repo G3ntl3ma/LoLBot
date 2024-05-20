@@ -22,6 +22,7 @@ module.exports = {
                 "America/New_York \n" +
                 "America/Los_Angeles \n" +
                 "Asia/Seoul \n" +
+                "or use GMT Time Zones like GMT+0" +
                 "If you can't find your Time zone use \n" +
                 "https://www.timezoneconverter.com/cgi-bin/findzone";
             yield interaction.reply(replyString);
