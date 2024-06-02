@@ -8,7 +8,7 @@ import path from "path";
 import {Worker} from "worker_threads"
 import {findNewGames, updateFinishedGames} from "./util/updateGameFiles";
 import {connect} from "./DB/DBHandler";
-
+//This is a Test
 
 const client = new Client({
     intents: [
