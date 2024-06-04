@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allTimeZones = exports.localDateString = void 0;
+exports.formatSQLString = exports.allTimeZones = exports.localDateString = void 0;
 const timezones_list_1 = __importDefault(require("timezones-list"));
 /**
  * Various Utility Classes that are used all over the place
@@ -25,3 +25,16 @@ function allTimeZones() {
     return list;
 }
 exports.allTimeZones = allTimeZones;
+/**
+ * Format a JS Date to an SQL date String for Comparisons
+  */
+function formatSQLString(date) {
+    const mutatedNewDate = date.toISOString().substring(0, 4) +
+        date.toISOString().substring(5, 7) +
+        date.toISOString().substring(8, 10) +
+        date.toISOString().substring(11, 13) +
+        date.toISOString().substring(14, 16) +
+        date.toISOString().substring(17, 19);
+    return mutatedNewDate;
+}
+exports.formatSQLString = formatSQLString;

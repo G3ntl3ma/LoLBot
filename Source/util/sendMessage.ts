@@ -2,6 +2,7 @@ import {EmbedBuilder} from 'discord.js'
 import {game} from './Types'
 
 export async function sendUpcomingGame(game: game, team: string, time:string){
+
     console.log(time)
     let logoURL : string = "https://imgur.com/deu1U5t.jpeg";
     const info = await fetch(
@@ -11,14 +12,14 @@ export async function sendUpcomingGame(game: game, team: string, time:string){
         logoURL = data["query"]["pages"][i]["imageinfo"][0]["url"]
     }
 
+    
     const Embed = new EmbedBuilder()
         .setColor(0x0099FF)
-        .setDescription("Upcoming Game from one of your Subscriptions")
+        .setDescription(`${game.Team1} vs ${game.Team2}`)
         .setTitle('Upcoming Game:')
         .setThumbnail('https://imgur.com/deu1U5t.jpeg')
         .setImage(logoURL)
         .addFields(
-            { name: "Teams", value: `${game.Team1} vs ${game.Team2}` },
             {name : "Time:", value: time}
         )
     return Embed

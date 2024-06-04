@@ -18,9 +18,9 @@ parentPort.on('message', () => {
                 IntentsBitField.Flags.MessageContent]
         });
         client.login(DISCORD_TOKEN)
-        findNewGames(client)
-            .then(res => newGamesInterval = setInterval(findNewGames, 86_400_000, client))
 
+        findNewGames(client)
+            .then(res => newGamesInterval = setInterval(findNewGames, 3_600_000, client))
         console.log("newGames Worker is Working")
     })
 })

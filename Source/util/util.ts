@@ -28,3 +28,17 @@ export function allTimeZones(){
     }
     return list
 }
+
+/**
+ * Format a JS Date to an SQL date String for Comparisons
+  */
+export function formatSQLString(date:Date){
+const mutatedNewDate :string =
+        date.toISOString().substring(0, 4) +
+        date.toISOString().substring(5, 7) +
+        date.toISOString().substring(8, 10) +
+        date.toISOString().substring(11, 13) +
+        date.toISOString().substring(14, 16) +
+        date.toISOString().substring(17, 19)
+  return mutatedNewDate;
+}

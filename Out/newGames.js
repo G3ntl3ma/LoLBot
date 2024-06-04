@@ -20,7 +20,7 @@ worker_threads_1.parentPort.on('message', () => {
         });
         client.login(config_1.DISCORD_TOKEN);
         (0, updateGameFiles_1.findNewGames)(client)
-            .then(res => newGamesInterval = setInterval(updateGameFiles_1.findNewGames, 86400000, client));
+            .then(res => newGamesInterval = setInterval(updateGameFiles_1.findNewGames, 3600000, client));
         console.log("newGames Worker is Working");
     });
 });

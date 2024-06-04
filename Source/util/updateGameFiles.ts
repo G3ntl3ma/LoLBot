@@ -3,7 +3,7 @@ import {gameConfig} from "../DB/serverConfig";
 import {getGames, getGuild} from "../DB/DBHandler";
 import {Client} from "discord.js"
 import {sendFinishedGame, sendUpcomingGame} from "./sendMessage";
-import {localDateString} from "./util";
+import {localDateString, formatSQLString} from "./util";
 
 /**
  * This File looks for new Games and adds them to the DB.
@@ -30,20 +30,25 @@ type returnQuery = {
 }
 
 export async function findNewGames(client:Client) {
-    for (let i = 0; i <= 30; i++) {
+        
+  //Get all Games in the next 10 Days
+        let oldDate = new Date()
+        oldDate.setDate(oldDate.getUTCDate())
+        let newDate = new Date()
+        newDate.setDate(newDate.getUTCDate() + 10)
+        const mutatedOldDate = formatSQLString(oldDate)
+        const mutatedNewDate = formatSQLString(newDate)
 
-        let date = new Date()
-        date.setDate(date.getUTCDate() + i)
         const matchSchedule = await fetch(
             `https://lol.fandom.com/api.php?action=cargoquery&
             format=json&limit=max&tables=MatchSchedule&fields=Team1,Team2, DateTime_UTC, Winner&
-            where=DateTime_UTC like '${date.toISOString().substring(0, 10)}%'`);
+            where=DateTime_UTC > '${mutatedOldDate}' AND DateTime_UTC <= '${mutatedNewDate}'`);
         const matchScheduleData = await matchSchedule.json();
 
         const scoreBoardGames = await fetch(
          `https://lol.fandom.com/api.php?action=cargoquery&
         format=json&limit=max&tables=ScoreboardGames&fields=WinTeam,Team1,Team2,DateTime_UTC, Tournament&
-        where=DateTime_UTC like '${date.toISOString().substring(0, 10)}%'`
+        where=DateTime_UTC > '${mutatedOldDate}' AND DateTime_UTC <= '${mutatedNewDate}'`
         )
         const scoreBoardGamesData = await scoreBoardGames.json();
         let games : game[] = [] ;
@@ -106,7 +111,7 @@ export async function findNewGames(client:Client) {
                 }
             }
         }
-    }
+    
     console.log("New Games Iteration Finished")
 }
 
@@ -118,20 +123,11 @@ export async function updateFinishedGames(client: Client) {
     //get all Games with a Date between the Past and the Last Day
     let newDate = new Date()
     newDate.setDate(newDate.getUTCDate())
-    let mutatedNewDate = newDate.toISOString().substring(0, 4) +
-        newDate.toISOString().substring(5, 7) +
-        newDate.toISOString().substring(8, 10) +
-        newDate.toISOString().substring(11, 13) +
-        newDate.toISOString().substring(14, 16) +
-        newDate.toISOString().substring(17, 19)
+    let mutatedNewDate = formatSQLString(newDate)
     let oldDate = new Date()
     oldDate.setDate(oldDate.getUTCDate() - 2)
-    const mutatedOldDate = oldDate.toISOString().substring(0, 4) +
-        oldDate.toISOString().substring(5, 7) +
-        oldDate.toISOString().substring(8, 10) +
-        oldDate.toISOString().substring(11, 13) +
-        oldDate.toISOString().substring(14, 16) +
-        oldDate.toISOString().substring(17, 19)
+    const mutatedOldDate = formatSQLString(oldDate)
+
     let scheduleGamesRequest: string =  `https://lol.fandom.com/api.php?action=cargoquery&
     format=json&limit=max&tables=MatchSchedule&fields=Winner,Team1,Team2,DateTime_UTC&
     where=DateTime_UTC <= '${mutatedNewDate}' AND DateTime_UTC >= '${mutatedOldDate}'`

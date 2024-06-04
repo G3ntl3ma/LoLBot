@@ -22,11 +22,11 @@ function sendUpcomingGame(game, team, time) {
         }
         const Embed = new discord_js_1.EmbedBuilder()
             .setColor(0x0099FF)
-            .setDescription("Upcoming Game from one of your Subscriptions")
+            .setDescription(`${game.Team1} vs ${game.Team2}`)
             .setTitle('Upcoming Game:')
             .setThumbnail('https://imgur.com/deu1U5t.jpeg')
             .setImage(logoURL)
-            .addFields({ name: "Teams", value: `${game.Team1} vs ${game.Team2}` }, { name: "Time:", value: time });
+            .addFields({ name: "Time:", value: time });
         return Embed;
     });
 }
