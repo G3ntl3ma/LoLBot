@@ -5,8 +5,10 @@ import { Client, IntentsBitField, REST, Routes, Collection } from "discord.js";
 import { DISCORD_TOKEN, DISCORD_CLIENT_ID } from "./config";
 import fs from "fs";
 import path from "path";
+
 import { Worker } from "worker_threads";
 import { connect } from "./DB/DBHandler";
+
 
 const client = new Client({
   intents: [
