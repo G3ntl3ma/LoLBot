@@ -1,12 +1,12 @@
 import {Events, Guild} from "discord.js";
 
-import {deleteGuild} from "../DB/DBHandler";
+import {getGuild} from "../DB/DBHandler";
 require('discord.js');
 
 module.exports = {
     name: Events.GuildDelete,
     async execute(guild: Guild ) {
-        await deleteGuild(guild.id)
+        await (await getGuild()).deleteOne({_id: guild.id})
         console.log("Server has been sucessfully deleted!")
     },
 };

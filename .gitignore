@@ -1,3 +1,9 @@
 .idea/
 .env
 *.bat
+.Dockerignore
+Dockerfile
+Out/*
+docker-compose.yml
+node_modules
+data

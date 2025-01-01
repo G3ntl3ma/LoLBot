@@ -1,5 +1,5 @@
 import {SlashCommandBuilder} from "discord.js";
-import {getServerInfo, deleteTeamSub} from "../../DB/DBHandler";
+import {getGuild, getServerInfo} from "../../DB/DBHandler";
 import {serverInfo} from "../../util/Types";
 
 module.exports = {
@@ -38,13 +38,12 @@ module.exports = {
         } else {
             let isSubbed: boolean = false;
             for (let i in serverInfo.teamSubs) {
-                console.log("Stored Data: ", serverInfo.teamSubs[i])
-                if (serverInfo.teamSubs[i].code === Team[0]) isSubbed = true;
+                if (serverInfo.teamSubs[i] === Team[0]) isSubbed = true;
             }
 
             if (isSubbed) {
                 console.log(Team[0])
-                console.log(await deleteTeamSub(Team[0], interaction.guildId));
+                await (await getGuild()).findOneAndUpdate({_id: interaction.guildId}, {$pull :{'teamSubs': Team[0]}});
                 await interaction.reply(`You unsubscribed from ${Team[0]}!`);
                 return;
             } else {

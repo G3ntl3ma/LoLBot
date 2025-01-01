@@ -1,8 +1,8 @@
 import {SlashCommandBuilder, Interaction} from "discord.js";
-import {addTeamSub, getServerInfo} from "../../DB/DBHandler";
+import {getGames, getGuild, getServerInfo} from "../../DB/DBHandler";
 import {serverInfo} from "../../util/Types";
 import {sendUpcomingGame} from "../../util/sendMessage";
-import {find} from "../../DB/DBHandler"
+import {localDateString} from "../../util/util";
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -15,6 +15,7 @@ module.exports = {
                 .setRequired(true)
         ),
     async execute(interaction: any) {
+        await interaction.deferReply();
         let teamName = interaction.options.getString("teamname")
         let query: string = `https://lol.fandom.com/api.php?action=cargoquery&
         format=json&limit=max&tables=Teams&fields=Name&
@@ -34,36 +35,40 @@ module.exports = {
 
         if (Team.length === 0) {
             console.log("No Team found")
-            await interaction.reply("No Team with this Name has been found");
+            await interaction.editReply("No Team with this Name has been found");
             return;
         } else {
             const serverInfo: serverInfo = await getServerInfo(interaction.guildId);
             let alreadySubbed: boolean = false;
             for (let i in serverInfo.teamSubs) {
-                if (serverInfo.teamSubs[i].code == Team[0]) alreadySubbed = true;
+                if (serverInfo.teamSubs[i] == Team[0]) alreadySubbed = true;
             }
             console.log(alreadySubbed)
             if (alreadySubbed) {
                 console.log("Already subbed")
-                await interaction.reply(`You are already Subscribed to ${Team[0]}!`);
+                await interaction.editReply(`You are already Subscribed to ${Team[0]}!`);
                 return;
 
             } else {
-                await addTeamSub(Team[0], interaction.guildId);
-
+                let guild = await getGuild()
+                await guild.findOneAndUpdate({_id:interaction.guildId}, {$push: {teamSubs: Team[0]}});
                 const channel = await interaction.client.channels.fetch(serverInfo.out)
-                let games = await find();
+                let games = await (await getGames()).find();
                 for (let i in games) {
 
                     if (games[i].Team1 == Team[0] || games[i].Team2 == Team[0]) {
+                        let guildInfo: any = (await guild.findOne({_id:interaction.guildId}));
+                        let timeZone: string = ""
+                        timeZone = guildInfo.timezone
+                        console.log(timeZone)
                         //@ts-ignore
-                        const sendEmbed = await sendUpcomingGame(games[i], Team[0])
+                        const sendEmbed = await sendUpcomingGame(games[i], Team[0], localDateString(games[i]["DateTime UTC"], timeZone))
                         await channel.send(
                             {embeds: [sendEmbed]})
                     }
                 }
                 console.log("subbed")
-                await interaction.reply(`You subscribed to ${Team[0]}!`)
+                await interaction.editReply(`You subscribed to ${Team[0]}!`)
                 return;
             }
         }

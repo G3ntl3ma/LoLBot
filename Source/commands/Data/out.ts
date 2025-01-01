@@ -1,5 +1,5 @@
 import {SlashCommandBuilder, ChannelType} from "discord.js";
-import {updateOutput} from "../../DB/DBHandler";
+import {getGuild} from "../../DB/DBHandler";
 
 module.exports = {
     data : new SlashCommandBuilder()
@@ -14,7 +14,7 @@ module.exports = {
         ),
     async execute(interaction: any){
         const channel = interaction.options.getChannel("channelname");
-        await updateOutput(channel.id, interaction.guildId);
+        await (await getGuild()).findOneAndUpdate({_id: interaction.guildId}, {out: channel.id});
         await interaction.reply("Outputchannel has been sucessfully set!");
         return;
     },
