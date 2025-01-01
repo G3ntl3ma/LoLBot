@@ -1,15 +1,22 @@
 import dotenv from "dotenv";
 
-dotenv.config({ path: __dirname + "/../.env" });
+let DISCORD_TOKEN: string;
+let DISCORD_CLIENT_ID: string;
+let BASE_URL: string;
+let ONLINE_CONNECTION: string;
 
-// @ts-ignore
-const DISCORD_TOKEN: string = process.env.DISCORD_TOKEN;
-// @ts-ignore
-const DISCORD_CLIENT_ID: string = process.env.DISCORD_CLIENT_ID;
-// @ts-ignore
-const BASE_URL: string = process.env.BASE_URL;
-// @ts-ignore
-const ONLINE_CONNECTION: string = process.env.ONLINE_CONNECTION;
+if (process.env.PROD === "true") {
+  DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+  DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
+  BASE_URL = process.env.LOLBOT_BASE_URL;
+  ONLINE_CONNECTION = process.env.LOLBOT_ONLINE_CONNECTION;
+} else {
+  dotenv.config({ path: __dirname + "/../.env" });
+  DISCORD_TOKEN = process.env.DISCORD_TOKEN;
+  DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
+  BASE_URL = process.env.BASE_URL;
+  ONLINE_CONNECTION = process.env.ONLINE_CONNECTION;
+}
 
 if (!DISCORD_TOKEN || !DISCORD_CLIENT_ID) {
   throw new Error("Missing environment variables");
