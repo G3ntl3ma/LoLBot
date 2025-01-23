@@ -17,6 +17,8 @@ if (process.env.PROD === "true") {
   BASE_URL = process.env.BASE_URL;
   ONLINE_CONNECTION = process.env.ONLINE_CONNECTION;
 }
+console.log("Discord Token:", DISCORD_TOKEN);
+console.log("Client Id:", DISCORD_CLIENT_ID);
 
 if (!DISCORD_TOKEN || !DISCORD_CLIENT_ID) {
   throw new Error("Missing environment variables");
